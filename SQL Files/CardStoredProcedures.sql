@@ -1,4 +1,4 @@
-CREATE PROCEDURE SP_InsertIntoCard
+ALTER PROCEDURE SP_InsertIntoCard
 	@SetID INT,
 	@CardName VARCHAR(50),
 	@CardSetNumber VARCHAR(10),
@@ -6,31 +6,39 @@ CREATE PROCEDURE SP_InsertIntoCard
 	@Quantity INT,
 	@CardPrice INT
 AS
-	IF @SetID IS NULL
-		RAISERROR('Set ID cannot be null', 16, 1)
-		ELSE IF @CardName IS NULL
-			RAISERROR('Card name cannot be null', 16, 1)
-			ELSE IF @CardSetNumber IS NULL
-				RAISERROR('Card set number cannot be null', 16, 1)
-				ELSE IF @Quantity IS NULL
-					RAISERROR('Quantity cannot be null', 16, 1)
-					ELSE IF @CardPrice IS NULL
-						RAISERROR('Card price cannot be null', 16, 1)
-	ELSE
-		BEGIN
-			BEGIN TRANSACTION
-				INSERT [Card]
-				(SetID, CardName, CardSetNumber, Quantity, CardPrice)
-				VALUES  (@SetID, @CardName, @CardSetNumber, @Quantity, @CardPrice)
-				IF @@ERROR <> 0
-					BEGIN
-						RAISERROR('Failed to insert into card', 16, 1)
-						ROLLBACK TRANSACTION
-					END
-				ELSE
+
+DECLARE @ReturnCode INT
+SET @ReturnCode = 0
+
+IF @SetID IS NULL
+	RAISERROR('SP_InsertIntoCard: Set ID cannot be null', 16, 1)
+	ELSE IF @CardName IS NULL
+		RAISERROR('SP_InsertIntoCard: Card name cannot be null', 16, 1)
+		ELSE IF @CardSetNumber IS NULL
+			RAISERROR('SP_InsertIntoCard: Card set number cannot be null', 16, 1)
+			ELSE IF @Quantity IS NULL
+				RAISERROR('SP_InsertIntoCard: Quantity cannot be null', 16, 1)
+				ELSE IF @CardPrice IS NULL
+					RAISERROR('SP_InsertIntoCard: Card price cannot be null', 16, 1)
+ELSE
+	BEGIN
+		BEGIN TRANSACTION
+			INSERT Card
+			(SetID, CardName, CardSetNumber, Quantity, CardPrice)
+			VALUES  (@SetID, @CardName, @CardSetNumber, @Quantity, @CardPrice)
+			IF @@ERROR = 0
+				BEGIN
+					SET @ReturnCode = 0
 					COMMIT TRANSACTION
-		END	
-RETURN
+				END
+			ELSE
+				BEGIN
+					RAISERROR('SP_InsertIntoCard: Failed to insert into card', 16, 1)
+					ROLLBACK TRANSACTION
+					SET @ReturnCode = 1
+				END
+	END	
+RETURN @ReturnCode
 
 GO
 CREATE PROCEDURE SP_UpdateCard
@@ -42,98 +50,156 @@ CREATE PROCEDURE SP_UpdateCard
 	@Quantity INT,
 	@CardPrice INT
 AS
-	IF @CardID IS NULL
-		RAISERROR('Card ID cannot be null', 16, 1)
-			ELSE IF @SetID IS NULL
-				RAISERROR('Set ID cannot be null', 16, 1)
-				ELSE IF @CardName IS NULL
-					RAISERROR('Card name cannot be null', 16, 1)
-					ELSE IF @CardSetNumber IS NULL
-						RAISERROR('Card set number cannot be null', 16, 1)
-						ELSE IF @Quantity IS NULL
-							RAISERROR('Quantity cannot be null', 16, 1)
-							ELSE IF @CardPrice IS NULL
-								RAISERROR('Card price cannot be null', 16, 1)
-	ELSE
-		BEGIN TRANSACTION
-			UPDATE [Card]
-			SET
-			SetID = @SetID,
-			CardName = @CardName,
-			CardSetNumber = @CardSetNumber,
-			Quantity = @Quantity,
-			CardPrice = @CardPrice
-			WHERE CardID = @CardID
-			IF @@ERROR <> 0
-				BEGIN
-					RAISERROR('Failed to update card', 16, 1)
-					ROLLBACK TRANSACTION
-				END
-			ELSE
+
+DECLARE @ReturnCode INT
+SET @ReturnCode = 0
+	
+IF @CardID IS NULL
+	RAISERROR('SP_UpdateCard: Card ID cannot be null', 16, 1)
+		ELSE IF @SetID IS NULL
+			RAISERROR('SP_UpdateCard: Set ID cannot be null', 16, 1)
+			ELSE IF @CardName IS NULL
+				RAISERROR('SP_UpdateCard: Card name cannot be null', 16, 1)
+				ELSE IF @CardSetNumber IS NULL
+					RAISERROR('SP_UpdateCard: Card set number cannot be null', 16, 1)
+					ELSE IF @Quantity IS NULL
+						RAISERROR('SP_UpdateCard: Quantity cannot be null', 16, 1)
+						ELSE IF @CardPrice IS NULL
+							RAISERROR('SP_UpdateCard: Card price cannot be null', 16, 1)
+ELSE
+	BEGIN TRANSACTION
+		UPDATE [Card]
+		SET
+		SetID = @SetID,
+		CardName = @CardName,
+		CardSetNumber = @CardSetNumber,
+		Quantity = @Quantity,
+		CardPrice = @CardPrice
+		WHERE CardID = @CardID
+		IF @@ERROR = 0
+			BEGIN
+				SET @ReturnCode = 0
 				COMMIT TRANSACTION
-RETURN
+			END
+		ELSE
+			BEGIN
+				RAISERROR('SP_UpdateCard: Failed to update card', 16, 1)
+				SET @ReturnCode = 1
+				ROLLBACK TRANSACTION
+			END
+RETURN @ReturnCode
 
 GO
 CREATE PROCEDURE SP_DeleteCard 
 	@CardID INT
 AS
-	IF @CardID IS NULL
-		RAISERROR('Card ID cannot be null', 16, 1)
-	ELSE
-		BEGIN TRANSACTION
-			DELETE FROM [Card]
-			WHERE @CardID = CardID
-			IF @@ERROR <> 0
-				BEGIN
-					RAISERROR('Failed to delete card', 16, 1)
-					ROLLBACK TRANSACTION
-				END
-			ELSE
+
+DECLARE @ReturnCode INT
+SET @ReturnCode = 0
+
+IF @CardID IS NULL
+	RAISERROR('SP_DeleteCard: Card ID cannot be null', 16, 1)
+ELSE
+	BEGIN TRANSACTION
+		DELETE FROM [Card]
+		WHERE @CardID = CardID
+		IF @@ERROR = 0
+			BEGIN
+				SET @ReturnCode = 0
 				COMMIT TRANSACTION
+			END
+		ELSE
+			BEGIN
+				RAISERROR('SP_DeleteCard: Failed to delete card', 16, 1)
+				ROLLBACK TRANSACTION
+			END
 RETURN
 
 GO
-CREATE PROCEDURE SP_GetAllCards 
+ALTER PROCEDURE SP_GetAllCards 
 AS
-	SELECT CardID, SetID, CardName, CardSetNumber, CardRarity, Quantity, CardPrice
-	FROM [CARD]
-RETURN
+
+DECLARE @ReturnCode INT
+SET @ReturnCode = 0
+
+	SELECT 
+	CardID, SetID, CardName, CardSetNumber, CardRarity, Quantity, CardPrice
+	FROM CARD
+	IF @@ERROR = 0
+		SET @ReturnCode = 0
+	ELSE
+		BEGIN
+			RAISERROR('SP_GetAllCards: Failed to get all cards', 16, 1)
+			SET @ReturnCode = 1
+		END
+RETURN @ReturnCode
 
 GO 
-CREATE PROCEDURE SP_GetAllCardsBySet
+ALTER PROCEDURE SP_GetAllCardsBySet
 	@SetID INT
 AS
-	IF @SetID IS NULL
-		RAISERROR('Set ID cannot be null', 16, 1)
+
+DECLARE @ReturnCode INT
+SET @ReturnCode = 0
+
+IF @SetID IS NULL
+	RAISERROR('SP_GetAllCardsBySet: Set ID cannot be null', 16, 1)
+ELSE
+	SELECT 
+	CardID, SetID, CardName, CardSetNumber, CardRarity, Quantity, CardPrice
+	FROM [CARD]
+	WHERE @SetID = SetID
+	IF @@ERROR = 0
+		SET @ReturnCode = 0
 	ELSE
-		SELECT 
-		CardID, SetID, CardName, CardSetNumber, CardRarity, Quantity, CardPrice
-		FROM [CARD]
-		WHERE @SetID = SetID
-RETURN
+		BEGIN
+			SET @ReturnCode = 1
+			RAISERROR('SP_GetAllCardsBySet: Failed to get all cards by set',16, 1)
+		END
+RETURN @ReturnCode
 
 GO
 CREATE PROCEDURE SP_GetCardByCardID
 	@CardID INT
 AS
-	IF @CardID IS NULL
-		RAISERROR('Card ID cannot be null', 16, 1)
+
+DECLARE @ReturnCode INT
+SET @ReturnCode = 0
+
+IF @CardID IS NULL
+	RAISERROR('SP_GetCardByCardID: Card ID cannot be null', 16, 1)
+ELSE
+	SELECT 
+	CardID, SetID, CardName, CardSetNumber, CardRarity, Quantity, CardPrice
+	FROM Card
+	WHERE @CardID = CardID
+	IF @@ERROR = 0
+		SET @ReturnCode = 0
 	ELSE
-		SELECT 
-		CardID, SetID, CardName, CardSetNumber, CardRarity, Quantity, CardPrice
-		FROM [CARD]
-		WHERE @CardID = CardID
-RETURN
+		RAISERROR('SP_GetCardByCardID: Failed to find a card the by provided card ID', 16, 1)
+		SET @ReturnCode = 1
+RETURN @ReturnCode
 
 GO 
-CREATE PROCEDURE SP_GetCardByCardName
+ALTER PROCEDURE SP_GetCardByCardName
 	@CardName VARCHAR(50)
 AS
-	IF @CardName IS NULL
-		RAISERROR('Card Name cannot be null', 16, 1)
+
+DECLARE @ReturnCode INT
+SET @ReturnCode = 0
+
+IF @CardName IS NULL
+	RAISERROR('SP_GetCardByCardName: Card Name cannot be null', 16, 1)
+ELSE
+	SELECT
+	CardID, SetID, CardName, CardSetNumber, CardRarity, Quantity, CardPrice
+	FROM [CARD]
+	WHERE @CardName = CardName
+	IF @@ERROR = 0
+		SET @ReturnCode = 0
 	ELSE
-		SELECT
-		CardID, SetID, CardName, CardSetNumber, CardRarity, Quantity, CardPrice
-		FROM [CARD]
-		WHERE @CardName = CardName
-RETURN
+		BEGIN
+			RAISERROR('SP_GetCardByCardName: Failed to find a card by the provided card name', 16, 1)
+			SET @ReturnCode = 1
+		END
+RETURN @ReturnCode

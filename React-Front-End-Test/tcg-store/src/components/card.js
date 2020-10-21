@@ -9,6 +9,9 @@ class Card extends React.Component {
                     <div>
                         <h1>{card.name}</h1>
                         <p>{card.desc}</p>
+                        <p>{card.atk}</p>
+                        <p>{card.def}</p>
+                        <p>{card.linkval}</p>
                     </div>
                 )
                 )
