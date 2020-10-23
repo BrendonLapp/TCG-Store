@@ -19,60 +19,60 @@ namespace TCG_Store.Controllers
         [HttpGet]
         public List<Game> Get()
         {
-            List<Game> allGames = new List<Game>();
-            List<GameDTO> gameDTOs = new List<GameDTO>();
-            GamesDataController dataController = new GamesDataController();
+            List<Game> AllGames = new List<Game>();
+            List<GameDTO> GameDTOs = new List<GameDTO>();
+            GamesDataController DataController = new GamesDataController();
 
-            gameDTOs = dataController.GetAllGames();
+            GameDTOs = DataController.GetAllGames();
             
-            foreach (var game in gameDTOs)
+            foreach (var Game in GameDTOs)
             {
                 Game incomingGame = new Game
                 {
-                    GameID = game.GameID,
-                    GameName = game.GameName
+                    GameID = Game.GameID,
+                    GameName = Game.GameName
                 };
                 
-                allGames.Add(incomingGame);
+                AllGames.Add(incomingGame);
             }
 
-            return allGames;
+            return AllGames;
         }
 
         // GET api/<GamesController>/5
-        [HttpGet("{gameID}")]
-        public Game Get(int gameID)
+        [HttpGet("{GameID}")]
+        public Game Get(int GameID)
         {
-            Game game = new Game();
-            GameDTO gameDTO = new GameDTO();
-            GamesDataController dataController = new GamesDataController();
+            Game Game = new Game();
+            GameDTO GameDTO = new GameDTO();
+            GamesDataController DataController = new GamesDataController();
 
-            gameDTO = dataController.GetGameByID(gameID);
+            GameDTO = DataController.GetGameByID(GameID);
 
-            game.GameID = gameDTO.GameID;
-            game.GameName = gameDTO.GameName;
+            Game.GameID = GameDTO.GameID;
+            Game.GameName = GameDTO.GameName;
 
-            return game;
+            return Game;
         }
 
         // POST api/<GamesController>
         [HttpPost]
-        public bool Post(Game newGame)
+        public bool Post(Game NewGame)
         {
-            bool confirmation = false;
+            bool Confirmation = false;
 
-            GamesDataController dataController = new GamesDataController();
+            GamesDataController DataController = new GamesDataController();
 
             try
             {
-                confirmation = dataController.InsertIntoGame(newGame.GameName);
+                Confirmation = DataController.InsertIntoGame(NewGame.GameName);
             }
             catch
             {
-                throw new Exception("Failed to add a new game");
+                throw new Exception("Failed to add a new Game");
             }
 
-            return confirmation;
+            return Confirmation;
         }
     }
 }

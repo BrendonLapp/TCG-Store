@@ -13,136 +13,118 @@ namespace TCG_Store_DAL.DataAccessControllers
     {
         public List<GameDTO> GetAllGames()
         {
-            List<GameDTO> allGames = new List<GameDTO>();
+            List<GameDTO> AllGames = new List<GameDTO>();
 
-            SqlConnection storeConnection = new SqlConnection();
-            storeConnection.ConnectionString = "Data Source=.;Initial Catalog=TCGStore;Persist Security Info=True;Integrated Security=true;";  //@"Persist Security Info=False;Database=TCG_Store;User ID=;Password=;server=.;";
-            storeConnection.Open();
+            SqlConnection StoreConnection = new SqlConnection();
+            StoreConnection.ConnectionString = "Data Source=.;Initial Catalog=TCGStore;Persist Security Info=True;Integrated Security=true;";  //@"Persist Security Info=False;Database=TCG_Store;User ID=;Password=;server=.;";
+            StoreConnection.Open();
 
-            SqlCommand searchForAllGames = new SqlCommand
+            SqlCommand SearchForAllGamesCommand = new SqlCommand
             {
                 CommandText = "GetAllGames",
                 CommandType = CommandType.StoredProcedure,
-                Connection = storeConnection
+                Connection = StoreConnection
             };
 
-            SqlDataReader dataReader;
+            SqlDataReader DataReader;
 
-            dataReader = searchForAllGames.ExecuteReader();
+            DataReader = SearchForAllGamesCommand.ExecuteReader();
 
-            if (dataReader.HasRows)
+            if (DataReader.HasRows)
             {
-                while (dataReader.Read())
+                while (DataReader.Read())
                 {
-                    GameDTO incomingGame = new GameDTO();
-                    for (int index  = 0; index < dataReader.FieldCount; index++)
+                    GameDTO FoundGame = new GameDTO();
+                    for (int index  = 0; index < DataReader.FieldCount; index++)
                     {
-                        incomingGame.GameID = int.Parse(dataReader["GameID"].ToString());
-                        incomingGame.GameName = dataReader["GameName"].ToString();
-                        //switch (dataReader.GetName(index))
-                        //{
-                        //    case "GameID":
-                        //        incomingGame.GameID = int.Parse(dataReader[index].ToString());
-                        //        break;
-                        //    case "GameName":
-                        //        incomingGame.GameName = dataReader[index].ToString();
-                        //        break;
-                        //}
+                        FoundGame.GameID = int.Parse(DataReader["GameID"].ToString());
+                        FoundGame.GameName = DataReader["GameName"].ToString();
                     }
-                    allGames.Add(incomingGame);
+                    AllGames.Add(FoundGame);
                 }
             }
 
-            dataReader.Close();
-            storeConnection.Close();
+            DataReader.Close();
+            StoreConnection.Close();
 
-            return allGames;
+            return AllGames;
         }
 
-        public GameDTO GetGameByID(int gameID)
+        public GameDTO GetGameByID(int GameID)
         {
-            GameDTO game = new GameDTO();
+            GameDTO FoundGame = new GameDTO();
 
-            SqlConnection storeConnection = new SqlConnection();
-            storeConnection.ConnectionString = "Data Source=.;Initial Catalog=TCGStore;Persist Security Info=True;Integrated Security=true;";
-            storeConnection.Open();
+            SqlConnection StoreConnection = new SqlConnection();
+            StoreConnection.ConnectionString = "Data Source=.;Initial Catalog=TCGStore;Persist Security Info=True;Integrated Security=true;";
+            StoreConnection.Open();
 
-            SqlCommand searchForGameByID = new SqlCommand
+            SqlCommand SearchForGameByIDCommand = new SqlCommand
             {
                 CommandText = "GetGameByID",
                 CommandType = CommandType.StoredProcedure,
-                Connection = storeConnection
+                Connection = StoreConnection
             };
 
-            SqlParameter gameIDParameter = new SqlParameter
+            SqlParameter GameIDParameter = new SqlParameter
             {
                 ParameterName = "GameID",
                 Direction = ParameterDirection.Input,
                 SqlDbType = SqlDbType.VarChar,
-                SqlValue = gameID
+                SqlValue = GameID
             };
-            searchForGameByID.Parameters.Add(gameIDParameter);
+            SearchForGameByIDCommand.Parameters.Add(GameIDParameter);
 
-            SqlDataReader dataReader;
+            SqlDataReader DataReader;
 
-            dataReader = searchForGameByID.ExecuteReader();
+            DataReader = SearchForGameByIDCommand.ExecuteReader();
 
-            if (dataReader.HasRows)
+            if (DataReader.HasRows)
             {
-                while (dataReader.Read())
+                while (DataReader.Read())
                 {
-                    for (int index = 0; index < dataReader.FieldCount; index++)
+                    for (int index = 0; index < DataReader.FieldCount; index++)
                     {
-                        game.GameID = int.Parse(dataReader["GameID"].ToString());
-                        game.GameName = dataReader["GameName"].ToString();
-                    //    switch (dataReader.GetName(index))
-                    //    {
-                    //        case "GameID":
-                    //            game.GameID = int.Parse(dataReader[index].ToString()) ;
-                    //            break;
-                    //        case "GameName":
-                    //            game.GameName = dataReader[index].ToString();
-                    //            break;
-                    //    }
+                        FoundGame.GameID = int.Parse(DataReader["GameID"].ToString());
+                        FoundGame.GameName = DataReader["GameName"].ToString();
                     }
                 }
             }
 
-            dataReader.Close();
-            storeConnection.Close();
+            DataReader.Close();
+            StoreConnection.Close();
 
-            return game;
+            return FoundGame;
         }
 
-        public bool InsertIntoGame(string newGame)
+        public bool InsertIntoGame(string NewGameName)
         {
-            bool success;
+            bool Success;
 
-            SqlConnection storeConnection = new SqlConnection();
-            storeConnection.ConnectionString = "Data Source=.;Initial Catalog=TCGStore;Persist Security Info=True;Integrated Security=true;";
-            storeConnection.Open();
+            SqlConnection StoreConnection = new SqlConnection();
+            StoreConnection.ConnectionString = "Data Source=.;Initial Catalog=TCGStore;Persist Security Info=True;Integrated Security=true;";
+            StoreConnection.Open();
 
-            SqlCommand insertIntoGame = new SqlCommand
+            SqlCommand InsertIntoGameCommand = new SqlCommand
             {
                 CommandText = "InsertIntoGame",
                 CommandType = CommandType.StoredProcedure,
-                Connection = storeConnection
+                Connection = StoreConnection
             };
 
-            SqlParameter GameName = new SqlParameter
+            SqlParameter GameNameParameter = new SqlParameter
             {
                 ParameterName = "GameName",
                 Direction = ParameterDirection.Input,
                 SqlDbType = SqlDbType.VarChar,
-                SqlValue = newGame
+                SqlValue = NewGameName
             };
-            insertIntoGame.Parameters.Add(GameName);
+            InsertIntoGameCommand.Parameters.Add(GameNameParameter);
 
-            insertIntoGame.ExecuteNonQuery();
+            InsertIntoGameCommand.ExecuteNonQuery();
 
-            storeConnection.Close();
-            success = true;
-            return success;
+            StoreConnection.Close();
+            Success = true;
+            return Success;
         }
     }
 }

@@ -13,66 +13,66 @@ namespace TCG_Store_DAL.DataAccessControllers
     {
         public List<SetDTO> GetAllSets()
         {
-            List<SetDTO> setDTOs = new List<SetDTO>();
+            List<SetDTO> SetDTOs = new List<SetDTO>();
 
-            SqlConnection storeConnection = new SqlConnection();
-            storeConnection.ConnectionString = "Data Source=.;Initial Catalog=TCGStore;Persist Security Info=True;Integrated Security=true;";
-            storeConnection.Open();
+            SqlConnection StoreConnection = new SqlConnection();
+            StoreConnection.ConnectionString = "Data Source=.;Initial Catalog=TCGStore;Persist Security Info=True;Integrated Security=true;";
+            StoreConnection.Open();
 
-            SqlCommand GetAllSets = new SqlCommand
+            SqlCommand GetAllSetsCommand = new SqlCommand
             {
                 CommandText = "GetAllSets",
                 CommandType = CommandType.StoredProcedure,
-                Connection = storeConnection
+                Connection = StoreConnection
             };
 
-            SqlDataReader dataReader;
+            SqlDataReader DataReader;
 
-            dataReader = GetAllSets.ExecuteReader();
+            DataReader = GetAllSetsCommand.ExecuteReader();
 
-            if (dataReader.HasRows)
+            if (DataReader.HasRows)
             {
-                while (dataReader.Read())
+                while (DataReader.Read())
                 {
-                    SetDTO incomingSet = new SetDTO();
-                    for (int index = 0; index < dataReader.FieldCount; index++)
+                    SetDTO FoundSet = new SetDTO();
+                    for (int index = 0; index < DataReader.FieldCount; index++)
                     {
-                        switch(dataReader.GetName(index))
+                        switch(DataReader.GetName(index))
                         {
                             case "SetID":
-                                incomingSet.SetID = dataReader[index].ToString();
+                                FoundSet.SetID = DataReader[index].ToString();
                                 break;
                             case "GameID":
-                                incomingSet.GameID = int.Parse(dataReader[index].ToString());
+                                FoundSet.GameID = int.Parse(DataReader[index].ToString());
                                 break;
                             case "SetName":
-                                incomingSet.SetName = dataReader[index].ToString();
+                                FoundSet.SetName = DataReader[index].ToString();
                                 break;
                         }
                     }
-                    setDTOs.Add(incomingSet);
+                    SetDTOs.Add(FoundSet);
                 }
             }
 
-            dataReader.Close();
-            storeConnection.Close();
+            DataReader.Close();
+            StoreConnection.Close();
 
-            return setDTOs;
+            return SetDTOs;
         }
 
         public List<SetDTO> GetSetsByGame(int GameID)
         {
-            List<SetDTO> setsByGame = new List<SetDTO>();
+            List<SetDTO> SetsDTOsByGame = new List<SetDTO>();
 
-            SqlConnection storeConnection = new SqlConnection();
-            storeConnection.ConnectionString = "Data Source=.;Initial Catalog=TCGStore;Persist Security Info=True;Integrated Security=true;";
-            storeConnection.Open();
+            SqlConnection StoreConnection = new SqlConnection();
+            StoreConnection.ConnectionString = "Data Source=.;Initial Catalog=TCGStore;Persist Security Info=True;Integrated Security=true;";
+            StoreConnection.Open();
 
-            SqlCommand GetSetsByGame = new SqlCommand
+            SqlCommand GetSetsByGameCommand = new SqlCommand
             {
                 CommandText = "GetSetsByGameID",
                 CommandType = CommandType.StoredProcedure,
-                Connection = storeConnection
+                Connection = StoreConnection
             };
 
             SqlParameter GameIDParameter = new SqlParameter
@@ -82,39 +82,39 @@ namespace TCG_Store_DAL.DataAccessControllers
                 SqlDbType = SqlDbType.VarChar,
                 SqlValue = GameID
             };
-            GetSetsByGame.Parameters.Add(GameIDParameter);
+            GetSetsByGameCommand.Parameters.Add(GameIDParameter);
 
-            SqlDataReader dataReader;
+            SqlDataReader DataReader;
 
-            dataReader = GetSetsByGame.ExecuteReader();
+            DataReader = GetSetsByGameCommand.ExecuteReader();
 
-            if (dataReader.HasRows)
+            if (DataReader.HasRows)
             {
-                while (dataReader.Read())
+                while (DataReader.Read())
                 {
-                    SetDTO incomingSet = new SetDTO();
-                    for (int index = 0; index < dataReader.FieldCount; index++)
+                    SetDTO FoundSet = new SetDTO();
+                    for (int index = 0; index < DataReader.FieldCount; index++)
                     {
-                        switch (dataReader.GetName(index))
+                        switch (DataReader.GetName(index))
                         {
                             case "SetID":
-                                incomingSet.SetID = dataReader[index].ToString();
+                                FoundSet.SetID = DataReader[index].ToString();
                                 break;
                             case "GameID":
-                                incomingSet.GameID = int.Parse(dataReader[index].ToString());
+                                FoundSet.GameID = int.Parse(DataReader[index].ToString());
                                 break;
                             case "SetName":
-                                incomingSet.SetName = dataReader[index].ToString();
+                                FoundSet.SetName = DataReader[index].ToString();
                                 break;
                         }
                     }
-                    setsByGame.Add(incomingSet);
+                    SetsDTOsByGame.Add(FoundSet);
                 }
             }
-            dataReader.Close();
-            storeConnection.Close();
+            DataReader.Close();
+            StoreConnection.Close();
 
-            return setsByGame;
+            return SetsDTOsByGame;
         }
     }
 }
