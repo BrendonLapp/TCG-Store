@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TCG_Store_DAL.DTOs;
+﻿using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
+using TCG_Store_DAL.DTOs;
 
 namespace TCG_Store_DAL.DataAccessControllers
 {
@@ -115,6 +111,15 @@ namespace TCG_Store_DAL.DataAccessControllers
             StoreConnection.Close();
 
             return SetsDTOsByGame;
+        }
+
+        public bool AddNonExistingSetsToDataBase(List<SetDTO> NewSets)
+        {
+            bool Confirmation;
+
+
+
+            return Confirmation;
         }
     }
 }
