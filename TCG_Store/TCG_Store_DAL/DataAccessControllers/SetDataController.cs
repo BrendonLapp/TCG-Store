@@ -33,18 +33,10 @@ namespace TCG_Store_DAL.DataAccessControllers
                     SetDTO FoundSet = new SetDTO();
                     for (int index = 0; index < DataReader.FieldCount; index++)
                     {
-                        switch(DataReader.GetName(index))
-                        {
-                            case "SetID":
-                                FoundSet.SetID = DataReader[index].ToString();
-                                break;
-                            case "GameID":
-                                FoundSet.GameID = int.Parse(DataReader[index].ToString());
-                                break;
-                            case "SetName":
-                                FoundSet.SetName = DataReader[index].ToString();
-                                break;
-                        }
+                        FoundSet.SetID = int.Parse(DataReader[index].ToString());
+                        FoundSet.GameID = int.Parse(DataReader[index].ToString());
+                        FoundSet.SetCode = DataReader[index].ToString();
+                        FoundSet.SetName = DataReader[index].ToString();
                     }
                     SetDTOs.Add(FoundSet);
                 }
@@ -91,18 +83,10 @@ namespace TCG_Store_DAL.DataAccessControllers
                     SetDTO FoundSet = new SetDTO();
                     for (int index = 0; index < DataReader.FieldCount; index++)
                     {
-                        switch (DataReader.GetName(index))
-                        {
-                            case "SetID":
-                                FoundSet.SetID = DataReader[index].ToString();
-                                break;
-                            case "GameID":
-                                FoundSet.GameID = int.Parse(DataReader[index].ToString());
-                                break;
-                            case "SetName":
-                                FoundSet.SetName = DataReader[index].ToString();
-                                break;
-                        }
+                        FoundSet.SetID = int.Parse(DataReader["SetID"].ToString());
+                        FoundSet.GameID = int.Parse(DataReader["GameID"].ToString());
+                        FoundSet.SetCode = DataReader["SetCode"].ToString();
+                        FoundSet.SetName = DataReader["SetName"].ToString();
                     }
                     SetsDTOsByGame.Add(FoundSet);
                 }
@@ -117,8 +101,51 @@ namespace TCG_Store_DAL.DataAccessControllers
         {
             bool Confirmation;
 
+            SqlConnection StoreConnection = new SqlConnection();
+            StoreConnection.ConnectionString = "Data Source=.;Initial Catalog=TCGStore;Persist Security Info=True;Integrated Security=true;";
+            StoreConnection.Open();
 
+            foreach (var Set in NewSets)
+            {
+                SqlCommand AddNewSets = new SqlCommand
+                {
+                    CommandText = "InsertIntoSet",
+                    CommandType = CommandType.StoredProcedure,
+                    Connection = StoreConnection
+                };
 
+                SqlParameter GameIDParameter = new SqlParameter
+                {
+                    ParameterName = "GameID",
+                    Direction = ParameterDirection.Input,
+                    SqlDbType = SqlDbType.Int,
+                    SqlValue = Set.GameID
+                };
+                AddNewSets.Parameters.Add(GameIDParameter);
+
+                SqlParameter SetCodeParameter = new SqlParameter
+                {
+                    ParameterName = "SetCode",
+                    Direction = ParameterDirection.Input,
+                    SqlDbType = SqlDbType.VarChar,
+                    SqlValue = Set.SetCode
+                };
+                AddNewSets.Parameters.Add(SetCodeParameter);
+
+                SqlParameter SetNameParameter = new SqlParameter
+                {
+                    ParameterName = "SetName",
+                    Direction = ParameterDirection.Input,
+                    SqlDbType = SqlDbType.VarChar,
+                    SqlValue = Set.SetName
+                };
+                AddNewSets.Parameters.Add(SetNameParameter);
+
+                AddNewSets.ExecuteNonQuery();
+                AddNewSets.Parameters.Clear();
+            }
+            Confirmation = true;
+            StoreConnection.Close();
             return Confirmation;
         }
     }

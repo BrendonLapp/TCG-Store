@@ -8,8 +8,9 @@ namespace TCG_Store_DAL.DTOs
 {
     public class SetDTO
     {
-        public string SetID { get; set; }
+        public int SetID { get; set; }
         public int GameID { get; set; }
+        public string SetCode { get; set; }
         public string SetName { get; set; }
     }
 }

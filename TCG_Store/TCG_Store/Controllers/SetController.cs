@@ -22,10 +22,10 @@ namespace TCG_Store.Controllers
         public List<Set> Get()
         {
             List<Set> AllSets = new List<Set>();
-            SetDataController dataController = new SetDataController();
+            SetDataController DataController = new SetDataController();
             List<SetDTO> setDTOs = new List<SetDTO>();
 
-            setDTOs = dataController.GetAllSets();
+            setDTOs = DataController.GetAllSets();
 
             foreach (var item in setDTOs)
             {
@@ -48,10 +48,10 @@ namespace TCG_Store.Controllers
 
         [Route("GetNewSets/{GameID}")]
         [HttpGet]
-        public async Task<bool> GetAllSetsInGameAsync(int GameID)
+        public async Task<bool> GetNewSets(int GameID)
         {
             bool Success;
-            SetDataController dataController = new SetDataController();
+            SetDataController DataController = new SetDataController();
 
             List<SetAPIResponse> SetResponse = new List<SetAPIResponse>();
             List<SetDTO> NonExistingSets = new List<SetDTO>();
@@ -61,10 +61,10 @@ namespace TCG_Store.Controllers
             //I may also need to have different API response Objects to hold each ones response in before I turn it into my SetDTO
             using (var HttpClient = new HttpClient())
             {
-                using (var response = await HttpClient.GetAsync("https://db.ygoprodeck.com/api/v7/cardsets.php"))
+                using (var Response = await HttpClient.GetAsync("https://db.ygoprodeck.com/api/v7/cardsets.php"))
                 {
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    SetResponse = JsonConvert.DeserializeObject<List<SetAPIResponse>>(apiResponse);
+                    string ApiResponse = await Response.Content.ReadAsStringAsync();
+                    SetResponse = JsonConvert.DeserializeObject<List<SetAPIResponse>>(ApiResponse);
                 }
             }
 
@@ -73,18 +73,26 @@ namespace TCG_Store.Controllers
                 SetDTO NewSet = new SetDTO();
 
                 NewSet.GameID = GameID;
-                NewSet.SetID = Item.set_code;
+                NewSet.SetCode = Item.set_code;
                 NewSet.SetName = Item.set_name;
 
                 NonExistingSets.Add(NewSet);
             }
 
-            ExistingSets = dataController.GetSetsByGame(GameID);
+            ExistingSets = DataController.GetSetsByGame(GameID);
 
-            HashSet<string> SetIDs = new HashSet<string>(ExistingSets.Select(x => x.SetID));
-            NonExistingSets.RemoveAll(x => SetIDs.Contains(x.SetID));
+            HashSet<string> SetCodes = new HashSet<string>(ExistingSets.Select(x => x.SetCode));
+            NonExistingSets.RemoveAll(x => SetCodes.Contains(x.SetCode));
 
-            Success = dataController.AddNonExistingSetsToDataBase(NonExistingSets);
+            if (NonExistingSets.Count == 0 || NonExistingSets == null)
+            {
+                Success = false;
+            }
+            else
+            {
+                Success = DataController.AddNonExistingSetsToDataBase(NonExistingSets);
+            }
+            
             return Success;
         }
 
@@ -92,22 +100,22 @@ namespace TCG_Store.Controllers
         [HttpGet("{GameID}")]
         public List<Set> GetSetsByGame(int GameID)
         {
-            List<Set> setsByGame = new List<Set>();
-            List<SetDTO> setDTOs = new List<SetDTO>();
-            SetDataController dataController = new SetDataController();
+            List<Set> SetsByGame = new List<Set>();
+            List<SetDTO> SetDTOs = new List<SetDTO>();
+            SetDataController DataController = new SetDataController();
 
-            setDTOs = dataController.GetSetsByGame(GameID);
+            SetDTOs = DataController.GetSetsByGame(GameID);
 
-            foreach (var item in setDTOs)
+            foreach (var item in SetDTOs)
             {
                 Set incomingSet = new Set();
                 incomingSet.SetID = item.SetID;
                 incomingSet.SetName = item.SetName;
                 incomingSet.GameID = item.GameID;
-                setsByGame.Add(incomingSet);
+                SetsByGame.Add(incomingSet);
             }
 
-            return setsByGame;
+            return SetsByGame;
         }
 
         // POST api/<SetController>

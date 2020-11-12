@@ -1,22 +1,25 @@
-CREATE PROCEDURE InsertSet
+CREATE PROCEDURE InsertIntoSet
 	@SetName VARCHAR(40) = NULL,
-	@GameID INT = NUL
+	@SetCode VARCHAR(10) = NULL,
+	@GameID INT = NULL
 AS
 
 DECLARE @ReturnCode INT
 SET @ReturnCode = 0
 
 IF @SetName IS NULL
-	RAISERROR('InsertSet: Set name cannot be null', 16, 1)
-	IF @GameID IS NULL
-		RAISERROR('InsertSet: Game ID cannot be null', 16, 1)
+	RAISERROR('InsertIntoSet: Set name cannot be null', 16, 1)
+	IF @SetCode IS NULL
+		RAISERROR('InsertIntoSet: Set ID cannot be null', 16, 1)
+		IF @GameID IS NULL
+			RAISERROR('InsertIntoSet: Game ID cannot be null', 16, 1)
 ELSE
 	BEGIN
 		BEGIN TRANSACTION
 			INSERT [Set]
-			(GameID, SetName)
+			(GameID, SetCode, SetName)
 			VALUES
-			(@GameID, @SetName)
+			(@GameID, @SetCode, @SetName)
 			IF @@ERROR = 0
 				BEGIN
 					SET @ReturnCode = 0
@@ -25,11 +28,13 @@ ELSE
 			ELSE
 				BEGIN
 					SET @ReturnCode = 1
-					RAISERROR('InsertSet: Failed to insert into set', 16, 1)
+					RAISERROR('InsertIntoSet: Failed to insert into set', 16, 1)
 					ROLLBACK TRANSACTION
 				END
 	END
 RETURN @ReturnCode
+
+DROP PROCEDURE InsertIntoSet
 
 GO
 CREATE PROCEDURE UpdateSet
@@ -118,7 +123,7 @@ RETURN @ReturnCode
 DROP PROCEDURE SearchForGameByID
 
 GO
-CREATE PROCEDURE GetSetByID
+ALTER PROCEDURE GetSetByID
 	@SetID INT = NULL
 AS
 DECLARE @ReturnCode INT
@@ -127,7 +132,7 @@ SET @ReturnCode = 0
 IF @SetID IS NULL
 	RAISERROR('GetSetByID: Set ID cannot be null', 16, 1)
 
-	SELECT Setid, GameID, SetName 
+	SELECT SetID, GameID, SetCode, SetName 
 	FROM [Set]
 	WHERE SetID = @SetID
 	IF @@ERROR = 0
@@ -139,8 +144,10 @@ IF @SetID IS NULL
 		END
 RETURN @ReturnCode
 
+SELECT * FROM [Set]
+
 GO
-CREATE PROCEDURE GetSetsByGameID
+ALTER PROCEDURE GetSetsByGameID
 	@GameID INT = NULL
 AS
 	DECLARE @ReturnCode INT
@@ -149,7 +156,7 @@ AS
 	IF @GameID IS NULL
 		RAISERROR('GetSetsByGameID: Game ID cannot be null', 16, 1)
 
-		SELECT SetID, GameID, SetName
+		SELECT SetID, GameID, SetCode, SetName
 		FROM [Set]
 		WHERE GameID = @GameID
 		IF @@ERROR = 0
