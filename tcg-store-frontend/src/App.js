@@ -38,26 +38,18 @@ class App extends React.Component {
     //   }
     // }
 
+    
     const newGame = {
       gameName: this.state.gameName
     };
+    console.log(newGame);
 
-    // axios.post('http://localhost:44314/api/game', 
-    // newGame )
-    //   .then(res => {
-    //     console.log(res);
-    //     console.log(res.data);
-    //   })
-
-    fetch('https://localhost:44314/api/Game', {
-      method: 'Post',
-      mode: "no-cors",
-      headers: {
-        'Content-Type': 'text/plain'},
-      body: this.state.gameName
-    })
-    .then(response => response.text())
-    .catch(data => console.log(data));
+    axios.post('http://localhost:44314/api/game', 
+    newGame )
+      .then(res => {
+        console.log(res);
+        console.log(res.data);
+      })
 
   }
 

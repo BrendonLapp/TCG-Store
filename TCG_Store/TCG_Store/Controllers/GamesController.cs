@@ -8,12 +8,12 @@ using TCG_Store_DAL.DTOs;
 
 namespace TCG_Store.Controllers
 {
-    [Route("api/Game")]
     [ApiController]
     public class GamesController : ControllerBase
     {
         // GET: api/Game
         [HttpGet]
+        [Route("/")]
         public List<Game> Get()
         {
             List<Game> AllGames = new List<Game>();
@@ -38,6 +38,7 @@ namespace TCG_Store.Controllers
 
         // GET api/<GamesController>/5
         [HttpGet("{GameID}")]
+        [Route("/")]
         public Game Get(int GameID)
         {
             Game Game = new Game();
@@ -54,6 +55,7 @@ namespace TCG_Store.Controllers
 
         // POST api/<GamesController>
         [HttpPost]
+        [Route("/")]
         public bool Post(Game NewGame)
         {
             bool Confirmation = false;
