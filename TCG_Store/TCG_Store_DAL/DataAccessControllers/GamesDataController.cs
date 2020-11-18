@@ -16,7 +16,7 @@ namespace TCG_Store_DAL.DataAccessControllers
             List<GameDTO> AllGames = new List<GameDTO>();
 
             SqlConnection StoreConnection = new SqlConnection();
-            StoreConnection.ConnectionString = "Data Source=.;Initial Catalog=TCGStore;Persist Security Info=True;Integrated Security=true;";  //@"Persist Security Info=False;Database=TCG_Store;User ID=;Password=;server=.;";
+            StoreConnection.ConnectionString = "Data Source=.;Initial Catalog=TCGStore;Persist Security Info=True;Integrated Security=true;"; 
             StoreConnection.Open();
 
             SqlCommand SearchForAllGamesCommand = new SqlCommand

@@ -4,6 +4,7 @@ import AddNewGame from './Components/Admin/AddNewGame';
 import GameList from './Components/Admin/GameList';
 import React from 'react';
 import axios from 'axios';
+import $ from 'jquery';
 // import $, { post } from 'jquery';
 
 class App extends React.Component {
@@ -29,28 +30,23 @@ class App extends React.Component {
     })
   }
 
-  addNewGame(event) {
-    event.preventDefault();
-
-    // let axiosConfig = {
-    //   headers: {
-    //     'Content-Type': 'application/json;charset=UTF-8'
-    //   }
-    // }
-
+  addNewGame() {
+    //event.preventDefault();
     
-    const newGame = {
-      gameName: this.state.gameName
-    };
-    console.log(newGame);
+    const NewGame = ({
+      GameName: this.state.gameName
+    });
+    console.log(NewGame);
 
-    axios.post('http://localhost:44314/api/game', 
-    newGame )
-      .then(res => {
-        console.log(res);
-        console.log(res.data);
-      })
-
+    // $.ajax({
+    //   url: 'https://localhost:44314/api/GameController/Post',
+    //   type: "POST",
+    //   contentType: 'application/json',
+    //   headers: "Access-Control-Allow-Origin: *",
+    //   data: NewGame,
+    //   success: console.log(NewGame)
+    // });
+    axios.post('https://localhost:44314/api/GameController', NewGame)
   }
 
   render() {
@@ -61,12 +57,12 @@ class App extends React.Component {
           <AddNewGame
             gameName = {this.state.gameName}
             handleInputChange = {this.handleInputChange}
-            addNewGame = {this.addNewGame}
+            addNewGame = {this.addNewGame()}
           />
         </div>
-        {/* <div>
+        {<div>
           <GameList/>
-        </div> */}
+        </div>}
       </div>
     )
   }

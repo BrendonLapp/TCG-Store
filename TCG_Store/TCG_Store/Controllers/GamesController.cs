@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using TCG_Store.Models;
 using TCG_Store_DAL.DataAccessControllers;
 using TCG_Store_DAL.DTOs;
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Microsoft.AspNetCore.Cors;
 
 namespace TCG_Store.Controllers
 {
+    [Route("api/v1/Games")]
     [ApiController]
     public class GamesController : ControllerBase
     {
         // GET: api/Game
         [HttpGet]
-        [Route("/")]
         public List<Game> Get()
         {
             List<Game> AllGames = new List<Game>();
@@ -38,7 +38,6 @@ namespace TCG_Store.Controllers
 
         // GET api/<GamesController>/5
         [HttpGet("{GameID}")]
-        [Route("/")]
         public Game Get(int GameID)
         {
             Game Game = new Game();
@@ -54,10 +53,10 @@ namespace TCG_Store.Controllers
         }
 
         // POST api/<GamesController>
-        [HttpPost]
-        [Route("/")]
-        public bool Post(Game NewGame)
+        //[HttpPost]
+        public bool Post([FromBody] Game NewGame)
         {
+            //return hhtp status code instead of bool
             bool Confirmation = false;
 
             GamesDataController DataController = new GamesDataController();

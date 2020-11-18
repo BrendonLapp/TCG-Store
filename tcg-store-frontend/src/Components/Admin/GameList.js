@@ -7,7 +7,7 @@ export default class GameList extends React.Component {
     }
 
     componentDidMount() {
-        Axios.get('https://localhost:44314/api/game').then(res => {
+        Axios.get('https://localhost:44314/api/GameController').then(res => {
             //console.log(res);
             this.setState({games: res.data});
         })
