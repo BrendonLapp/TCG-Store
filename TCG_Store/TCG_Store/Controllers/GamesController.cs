@@ -53,7 +53,7 @@ namespace TCG_Store.Controllers
         }
 
         // POST api/<GamesController>
-        //[HttpPost]
+        [HttpPost]
         public bool Post([FromBody] Game NewGame)
         {
             //return hhtp status code instead of bool
@@ -68,6 +68,27 @@ namespace TCG_Store.Controllers
             catch
             {
                 throw new Exception("Failed to add a new Game");
+            }
+
+            return Confirmation;
+        }
+
+        //DELETE api/v1/<Gamescontroller>/1
+        [Route("{GameID:int}")]
+        [HttpDelete]
+        public bool Delete(int GameID)
+        {
+            bool Confirmation = false;
+
+            GamesDataController DataController = new GamesDataController();
+
+            try
+            {
+                Confirmation = DataController.DeleteFromGame(GameID);
+            }
+            catch
+            {
+                throw new Exception("Failed to delete the game");
             }
 
             return Confirmation;

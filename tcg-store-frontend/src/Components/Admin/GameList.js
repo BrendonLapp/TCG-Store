@@ -1,27 +1,21 @@
-import Axios from 'axios';
 import React from 'react';
+import axios from 'axios';
+import $ from 'jquery';
+//Components
+import GameDetails from './GameDetails';
 
-export default class GameList extends React.Component {
-    state = {
-        games: []
-    }
-
-    componentDidMount() {
-        Axios.get('https://localhost:44314/api/GameController').then(res => {
-            //console.log(res);
-            this.setState({games: res.data});
-        })
-    }
-
-    render() {
-        return (
-            <ul>
-                {this.state.games.map( game =>
-                    <li key={game.gameId}>
-                        {game.gameName}
-                    </li>
+function GameList(props) {
+    return (
+        <ul className="list-group">
+            {props.GameList.map( gameDetails =>
+                <li key={gameDetails.gameID} className="list-group-item"> 
+                    <span>{gameDetails.gameID}</span>
+                    <span>{gameDetails.gameName}</span>
+                    <button onClick={(e) => props.onDelete(gameDetails.gameID, e)}>Delete</button>
+                </li>
                 )}
-            </ul>
-        )
-    }
+        </ul>
+    )
 }
+
+export default GameList;

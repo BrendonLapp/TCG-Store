@@ -126,5 +126,36 @@ namespace TCG_Store_DAL.DataAccessControllers
             Success = true;
             return Success;
         }
+
+        public bool DeleteFromGame(int GameID)
+        {
+            bool Success;
+
+            SqlConnection StoreConnection = new SqlConnection();
+            StoreConnection.ConnectionString = "Data Source=.;Initial Catalog=TCGStore;Persist Security Info=True;Integrated Security=true;";
+            StoreConnection.Open();
+
+            SqlCommand DeleteFromGameCommand = new SqlCommand
+            {
+                CommandText = "DeleteGame",
+                CommandType = CommandType.StoredProcedure,
+                Connection = StoreConnection
+            };
+
+            SqlParameter GameIDParameter = new SqlParameter
+            {
+                ParameterName = "GameID",
+                Direction = ParameterDirection.Input,
+                SqlDbType = SqlDbType.Int,
+                SqlValue = GameID
+            };
+            DeleteFromGameCommand.Parameters.Add(GameIDParameter);
+
+            DeleteFromGameCommand.ExecuteNonQuery();
+
+            StoreConnection.Close();
+            Success = true;
+            return Success;
+        }
     }
 }

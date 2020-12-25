@@ -31,14 +31,13 @@ namespace TCG_Store
             { 
                 options.AddPolicy("CorsPolicy", 
                     builder => builder
-                        .WithOrigins("http://localhost:3000/")
+                        .WithOrigins("http://localhost:3001/")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials()); 
             });
             //later on move this towards a webconfig file
             //telling it to allow any call from the provided URL
-
 
         }
 
@@ -50,7 +49,7 @@ namespace TCG_Store
                 app.UseDeveloperExceptionPage();
             }
             app.UseCors("CorsPolicy");//implementing the cors policy
-            //this has to be done before the actualy api is configured otherwise it will not register it
+            //this has to be done before the actual api is configured otherwise it will not register it
             app.UseHttpsRedirection();
 
             app.UseRouting();
