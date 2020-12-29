@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using TCG_Store_DAL.DTOs;
 
@@ -126,6 +127,61 @@ namespace TCG_Store_DAL.DataAccessControllers
             Success = true;
 
             return Success;
+        }
+
+        public List<CardDTO> SearchCardsByPartialName(string SearchQuery)
+        {
+            List<CardDTO> CardsMatchingQuery = new List<CardDTO>();
+
+            SqlConnection StoreConnection = new SqlConnection();
+            StoreConnection.ConnectionString = "Data Source=.;Initial Catalog=TCGStore;Persist Security Info=True;Integrated Security=true;";
+            StoreConnection.Open();
+
+            SqlCommand SeachForCardsByPartialName = new SqlCommand
+            {
+                CommandText = "SeachForCardsByPartialName",
+                CommandType = CommandType.StoredProcedure,
+                Connection = StoreConnection
+            };
+
+            SqlParameter SearchQueryParameter = new SqlParameter
+            {
+                ParameterName = "SearchQuery",
+                Direction = ParameterDirection.Input,
+                SqlDbType = SqlDbType.VarChar,
+                SqlValue = SearchQuery
+            };
+            SeachForCardsByPartialName.Parameters.Add(SearchQueryParameter);
+
+            SqlDataReader DataReader = SeachForCardsByPartialName.ExecuteReader();
+
+            if (DataReader.HasRows)
+            {
+                while (DataReader.Read())
+                {
+                    CardDTO FoundCard = new CardDTO();
+                    for (int Index = 0; Index < DataReader.FieldCount; Index++)
+                    {
+                        FoundCard.CardID = int.Parse(DataReader["CardID"].ToString());
+                        FoundCard.CardCodeInSet = DataReader["CardCodeInSet"].ToString();
+                        FoundCard.SetID = int.Parse(DataReader["SetID"].ToString());
+                        FoundCard.CardName = DataReader["CardName"].ToString();
+                        FoundCard.Price = decimal.Parse(DataReader["Price"].ToString());
+                        FoundCard.Rarity = DataReader["Rarity"].ToString();
+                        FoundCard.ElementalType = DataReader["ElementalType"].ToString();
+                        FoundCard.SubType = DataReader["SubType"].ToString();
+                        FoundCard.SuperType = DataReader["SuperType"].ToString();
+                        FoundCard.PictureLink = DataReader["PictureLink"].ToString();
+                        FoundCard.PictureSmallLink = DataReader["PictureSmallLink"].ToString();
+                    }
+                    CardsMatchingQuery.Add(FoundCard);
+                }
+            }
+
+            DataReader.Close();
+            StoreConnection.Close();
+
+            return CardsMatchingQuery;
         }
     }
 }

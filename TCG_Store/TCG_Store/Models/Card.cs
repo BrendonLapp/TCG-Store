@@ -1,6 +1,11 @@
-﻿namespace TCG_Store_DAL.DTOs
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace TCG_Store.Models
 {
-    public class CardDTO
+    public class Card
     {
         /// <summary>
         /// The auto generated ID of the card in the database

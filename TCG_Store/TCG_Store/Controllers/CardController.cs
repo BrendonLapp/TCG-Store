@@ -9,11 +9,16 @@ using System.Net.Http;
 using TCG_Store_DAL.DTOs;
 using Newtonsoft.Json;
 using TCG_Store_DAL.DataAccessControllers;
+using Microsoft.AspNetCore.Mvc;
+using TCG_Store.Models;
 
 namespace TCG_Store.Controllers
 {
+    [Route("api/v1/Cards")]
+    [ApiController]
     public class CardController
     {
+        [HttpPost("AddYugiohCards/SetID={SetID}/SetName=/{SetName}/SetCode={SetCode}")]
         public async Task AddYugiohCards(int SetID, string SetName, string SetCode)
         {
             bool Success;
@@ -77,6 +82,7 @@ namespace TCG_Store.Controllers
 
         }
 
+        [HttpPost("AddPokemonCards/SetID={SetID}/SetCode={SetCode}")]
         public async Task AddPokemonCards(int SetID, string SetCode)
         {
             bool Success;
@@ -127,6 +133,38 @@ namespace TCG_Store.Controllers
                     }
                 }
             }
+        }
+
+        [HttpGet("{SearchQuery}")]
+        public List<Card> Get(string SearchQuery)
+        {
+            List<Card> CardsMatchingQuery = new List<Card>();
+            List<CardDTO> CardDTOsMatchingQuery = new List<CardDTO>();
+            CardDataController CardDataController = new CardDataController();
+
+            CardDTOsMatchingQuery = CardDataController.SearchCardsByPartialName(SearchQuery);
+
+            foreach (var CardDTO in CardDTOsMatchingQuery)
+            {
+                Card FoundCard = new Card
+                {
+                    CardID = CardDTO.CardID,
+                    SetID = CardDTO.SetID,
+                    CardCodeInSet = CardDTO.CardCodeInSet,
+                    CardName = CardDTO.CardName,
+                    Price = CardDTO.Price,
+                    ElementalType = CardDTO.ElementalType,
+                    Rarity = CardDTO.Rarity,
+                    SubType = CardDTO.SubType,
+                    SuperType = CardDTO.SuperType,
+                    APIImageID = CardDTO.APIImageID,
+                    PictureLink = CardDTO.PictureLink,
+                    PictureSmallLink = CardDTO.PictureSmallLink
+                };
+
+                CardsMatchingQuery.Add(FoundCard);
+            }
+            return CardsMatchingQuery;
         }
     }
 }

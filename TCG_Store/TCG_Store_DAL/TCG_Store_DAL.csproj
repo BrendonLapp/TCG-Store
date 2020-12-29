@@ -41,6 +41,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -230,7 +233,6 @@
     <Compile Include="DataAccessControllers\CardDataController.cs" />
     <Compile Include="DataAccessControllers\GamesDataController.cs" />
     <Compile Include="DataAccessControllers\SetDataController.cs" />
-    <Compile Include="DataAccessControllers\YugiohDataController.cs" />
     <Compile Include="DTOs\CardDTO.cs" />
     <Compile Include="DTOs\GameDTO.cs" />
     <Compile Include="APIResponseObjects\YugiohAPI\YgoSetAPIResponse.cs" />
