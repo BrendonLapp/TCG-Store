@@ -1,25 +1,29 @@
-CREATE PROCEDURE InsertIntoSet
+ALTER PROCEDURE InsertIntoSet
 	@SetName VARCHAR(40) = NULL,
 	@SetCode VARCHAR(10) = NULL,
-	@GameID INT = NULL
+	@GameID INT = NULL,
+	@ReleaseDate DATE NULL
 AS
 
 DECLARE @ReturnCode INT
 SET @ReturnCode = 0
 
 IF @SetName IS NULL
-	RAISERROR('InsertIntoSet: Set name cannot be null', 16, 1)
+	RAISERROR('InsertIntoSet: @SetName cannot be null', 16, 1)
 	IF @SetCode IS NULL
-		RAISERROR('InsertIntoSet: Set ID cannot be null', 16, 1)
+		RAISERROR('InsertIntoSet: @SetID cannot be null', 16, 1)
 		IF @GameID IS NULL
-			RAISERROR('InsertIntoSet: Game ID cannot be null', 16, 1)
+			RAISERROR('InsertIntoSet: @GameID cannot be null', 16, 1)
+			IF @ReleaseDate IS NULL
+				RAISERROR('InsertIntoSet: @ReleaseDate cannot be null', 16, 1)
 ELSE
 	BEGIN
 		BEGIN TRANSACTION
 			INSERT [Set]
-			(GameID, SetCode, SetName)
+			(GameID, SetCode, SetName, ReleaseDate)
 			VALUES
-			(@GameID, @SetCode, @SetName)
+			(@GameID, @SetCode, @SetName, @ReleaseDate)
+			SELECT SCOPE_IDENTITY();
 			IF @@ERROR = 0
 				BEGIN
 					SET @ReturnCode = 0

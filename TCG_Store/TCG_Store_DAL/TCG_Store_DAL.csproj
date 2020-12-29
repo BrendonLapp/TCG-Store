@@ -219,13 +219,21 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Compile Include="APIResponseObjects\YugiohAPIResponse.cs" />
-    <Compile Include="APIResponseObjects\YugiohAPIResponseRoot.cs" />
+    <Compile Include="APIResponseObjects\PokemonAPI\PokemonApiReponseRoot.cs" />
+    <Compile Include="APIResponseObjects\PokemonAPI\PokemonApiResponse.cs" />
+    <Compile Include="APIResponseObjects\YugiohAPI\YugiohCardDetails.cs" />
+    <Compile Include="APIResponseObjects\PokemonAPI\PokemonSetAPIResponse.cs" />
+    <Compile Include="APIResponseObjects\PokemonAPI\PokemonSetAPIResponseRoot.cs" />
+    <Compile Include="APIResponseObjects\YugiohAPI\YugiohAPIResponse.cs" />
+    <Compile Include="APIResponseObjects\YugiohAPI\YugiohAPIResponseRoot.cs" />
+    <Compile Include="APIResponseObjects\YugiohAPI\YugiohCardSet.cs" />
+    <Compile Include="DataAccessControllers\CardDataController.cs" />
     <Compile Include="DataAccessControllers\GamesDataController.cs" />
     <Compile Include="DataAccessControllers\SetDataController.cs" />
     <Compile Include="DataAccessControllers\YugiohDataController.cs" />
+    <Compile Include="DTOs\CardDTO.cs" />
     <Compile Include="DTOs\GameDTO.cs" />
-    <Compile Include="APIResponseObjects\SetAPIResponse.cs" />
+    <Compile Include="APIResponseObjects\YugiohAPI\YgoSetAPIResponse.cs" />
     <Compile Include="DTOs\SetDTO.cs" />
     <Compile Include="DTOs\YuGiOhDTO.cs" />
   </ItemGroup>

@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using TCG_Store_DAL.APIResponseObjects;
 using TCG_Store_DAL.DataAccessControllers;
 using TCG_Store_DAL.DTOs;
+using TCG_Store_DAL.APIResponseObjects.YugiohAPI;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -56,9 +57,6 @@ namespace TCG_Store.Controllers
                 YuGiOhDTO NewCard = new YuGiOhDTO
                 {
                     CardName = Item.name,
-                    Description = Item.desc,
-                    ATK = Item.atk,
-                    DEF = Item.def,
                     Type = Item.race,
                     CardType = Item.type,
                     Attribute = Item.attribute

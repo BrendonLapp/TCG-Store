@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace TCG_Store_DAL.APIResponseObjects
 {
-    public class YugiohAPIResponseRoot
+    public class PokemonSetAPIResponseRoot
     {
-        public YugiohAPIResponse[] data { get; set; }
+        public PokemonSetAPIResponse[] sets { get; set; }
     }
 }

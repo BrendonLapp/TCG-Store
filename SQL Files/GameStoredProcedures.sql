@@ -38,7 +38,9 @@ ELSE
 	END
 RETURN @ReturnCode
 
-
+EXEC InsertIntoGame @GameName = 'Pokemon'
+EXEC InsertIntoGame @GameName = 'Yu-Gi-Oh'
+SELECT * FROM [Set] WHERE GameID = 161
 GO
 CREATE PROCEDURE InsertIntoGame 
 	@GameName VARCHAR(30) = null

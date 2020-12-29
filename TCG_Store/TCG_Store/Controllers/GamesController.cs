@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using TCG_Store.Models;
 using TCG_Store_DAL.DataAccessControllers;
 using TCG_Store_DAL.DTOs;
-using Microsoft.AspNetCore.Cors;
 
 namespace TCG_Store.Controllers
 {

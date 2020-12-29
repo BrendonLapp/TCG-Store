@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 using TCG_Store.Models;
 using TCG_Store_DAL.APIResponseObjects;
 using TCG_Store_DAL.DataAccessControllers;
+using TCG_Store_DAL.APIResponseObjects.YugiohAPI;
 using TCG_Store_DAL.DTOs;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace TCG_Store.Controllers
 {
-    [Route("api/Set")]
+    [Route("api/v1/Set")]
     [ApiController]
     public class SetController : ControllerBase
     {
@@ -46,40 +47,68 @@ namespace TCG_Store.Controllers
             return "value";
         }
 
-        [Route("GetNewSets/{GameID}")]
-        [HttpGet]
-        public async Task<bool> GetNewSets(int GameID)
+        [Route("PostNewSets/{GameID}")]
+        [HttpPost]
+        public async Task<bool> PostNewSets(int GameID)
         {
             bool Success;
-            SetDataController DataController = new SetDataController();
+            SetDataController SetDataController = new SetDataController();
 
-            List<SetAPIResponse> SetResponse = new List<SetAPIResponse>();
+            List<YgoSetAPIResponse> YgoSetResponse = new List<YgoSetAPIResponse>();
+            PokemonSetAPIResponseRoot PokemonSetResponse = new PokemonSetAPIResponseRoot();
             List<SetDTO> NonExistingSets = new List<SetDTO>();
             List<SetDTO> ExistingSets = new List<SetDTO>();
 
-            //For the futre if I am adding in Sets for MTG or PKMN. I will need to do an IF statement to select which game I need to call an API for to populate my needed information.
-            //I may also need to have different API response Objects to hold each ones response in before I turn it into my SetDTO
+            GamesDataController GameDataController = new GamesDataController();
+            GameDTO GameDTO = GameDataController.GetGameByID(GameID);
+            CardController CardController = new CardController();
+
             using (var HttpClient = new HttpClient())
             {
-                using (var Response = await HttpClient.GetAsync("https://db.ygoprodeck.com/api/v7/cardsets.php"))
+                switch (GameDTO.GameName)
                 {
-                    string ApiResponse = await Response.Content.ReadAsStringAsync();
-                    SetResponse = JsonConvert.DeserializeObject<List<SetAPIResponse>>(ApiResponse);
+                    case "Yu-Gi-Oh":
+                        using (var Response = await HttpClient.GetAsync("https://db.ygoprodeck.com/api/v7/cardsets.php"))
+                        {
+                            string ApiResponse = await Response.Content.ReadAsStringAsync();
+                            YgoSetResponse = JsonConvert.DeserializeObject<List<YgoSetAPIResponse>>(ApiResponse);
+                        }
+
+                        foreach (var Item in YgoSetResponse)
+                        {
+                            SetDTO NewSet = new SetDTO();
+
+                            NewSet.GameID = GameID;
+                            NewSet.SetCode = Item.set_code;
+                            NewSet.SetName = Item.set_name;
+                            NewSet.ReleaseDate = Item.tcg_date;
+
+                            NonExistingSets.Add(NewSet);
+                        }
+
+                        break;
+
+                    case "Pokemon":
+                        using (var Response = await HttpClient.GetAsync("https://api.pokemontcg.io/v1/sets"))
+                        {
+                            string ApiResponse = await Response.Content.ReadAsStringAsync();
+                            PokemonSetResponse = JsonConvert.DeserializeObject<PokemonSetAPIResponseRoot>(ApiResponse);
+                        }
+                        foreach (var Item in PokemonSetResponse.sets)
+                        {
+                            SetDTO NewSet = new SetDTO();
+                            NewSet.GameID = GameID;
+                            NewSet.SetCode = Item.code;
+                            NewSet.SetName = Item.name;
+                            NewSet.ReleaseDate = Item.releaseDate;
+
+                            NonExistingSets.Add(NewSet);
+                        }
+                        break;
                 }
             }
 
-            foreach (var Item in SetResponse)
-            {
-                SetDTO NewSet = new SetDTO();
-
-                NewSet.GameID = GameID;
-                NewSet.SetCode = Item.set_code;
-                NewSet.SetName = Item.set_name;
-
-                NonExistingSets.Add(NewSet);
-            }
-
-            ExistingSets = DataController.GetSetsByGame(GameID);
+            ExistingSets = SetDataController.GetSetsByGame(GameID);
 
             HashSet<string> SetCodes = new HashSet<string>(ExistingSets.Select(x => x.SetCode));
             NonExistingSets.RemoveAll(x => SetCodes.Contains(x.SetCode));
@@ -90,7 +119,23 @@ namespace TCG_Store.Controllers
             }
             else
             {
-                Success = DataController.AddNonExistingSetsToDataBase(NonExistingSets);
+                int SetID;
+
+                foreach (var Set in NonExistingSets)
+                {
+                    SetID = SetDataController.AddNonExistingSetsToDataBase(Set);
+
+                    switch(GameDTO.GameName )
+                    {
+                        case "Yu-Gi-Oh":
+                            await CardController.AddYugiohCards(SetID, Set.SetName, Set.SetCode);
+                            break;
+                        case "Pokemon":
+                            await CardController.AddPokemonCards(SetID, Set.SetCode);
+                            break;
+                    }                    
+                }
+                Success = true;
             }
             
             return Success;
@@ -116,16 +161,6 @@ namespace TCG_Store.Controllers
             }
 
             return SetsByGame;
-        }
-
-        // POST api/<SetController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-            //Get all sets out of the ygo API
-            //send the sets to be saved into the DB
-            //Need to pull in game ID, because long term I want to have a switch to pick ygo/mtg/pkmn for getting the sets
-            //Should also check to make sure the set is not already in the DB and I'm only saving new sets
         }
     }
 }

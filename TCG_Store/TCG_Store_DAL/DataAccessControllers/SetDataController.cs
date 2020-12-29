@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using TCG_Store_DAL.DTOs;
@@ -97,56 +98,62 @@ namespace TCG_Store_DAL.DataAccessControllers
             return SetsDTOsByGame;
         }
 
-        public bool AddNonExistingSetsToDataBase(List<SetDTO> NewSets)
+        public int AddNonExistingSetsToDataBase(SetDTO NewSet)
         {
-            bool Confirmation;
+            int SetIDToPass;
 
             SqlConnection StoreConnection = new SqlConnection();
             StoreConnection.ConnectionString = "Data Source=.;Initial Catalog=TCGStore;Persist Security Info=True;Integrated Security=true;";
             StoreConnection.Open();
 
-            foreach (var Set in NewSets)
+            SqlCommand AddNewSet = new SqlCommand
             {
-                SqlCommand AddNewSets = new SqlCommand
-                {
-                    CommandText = "InsertIntoSet",
-                    CommandType = CommandType.StoredProcedure,
-                    Connection = StoreConnection
-                };
+                CommandText = "InsertIntoSet",
+                CommandType = CommandType.StoredProcedure,
+                Connection = StoreConnection
+            };
 
-                SqlParameter GameIDParameter = new SqlParameter
-                {
-                    ParameterName = "GameID",
-                    Direction = ParameterDirection.Input,
-                    SqlDbType = SqlDbType.Int,
-                    SqlValue = Set.GameID
-                };
-                AddNewSets.Parameters.Add(GameIDParameter);
+            SqlParameter GameIDParameter = new SqlParameter
+            {
+                ParameterName = "GameID",
+                Direction = ParameterDirection.Input,
+                SqlDbType = SqlDbType.Int,
+                SqlValue = NewSet.GameID
+            };
+            AddNewSet.Parameters.Add(GameIDParameter);
 
-                SqlParameter SetCodeParameter = new SqlParameter
-                {
-                    ParameterName = "SetCode",
-                    Direction = ParameterDirection.Input,
-                    SqlDbType = SqlDbType.VarChar,
-                    SqlValue = Set.SetCode
-                };
-                AddNewSets.Parameters.Add(SetCodeParameter);
+            SqlParameter SetCodeParameter = new SqlParameter
+            {
+                ParameterName = "SetCode",
+                Direction = ParameterDirection.Input,
+                SqlDbType = SqlDbType.VarChar,
+                SqlValue = NewSet.SetCode
+            };
+            AddNewSet.Parameters.Add(SetCodeParameter);
 
-                SqlParameter SetNameParameter = new SqlParameter
-                {
-                    ParameterName = "SetName",
-                    Direction = ParameterDirection.Input,
-                    SqlDbType = SqlDbType.VarChar,
-                    SqlValue = Set.SetName
-                };
-                AddNewSets.Parameters.Add(SetNameParameter);
+            SqlParameter SetNameParameter = new SqlParameter
+            {
+                ParameterName = "SetName",
+                Direction = ParameterDirection.Input,
+                SqlDbType = SqlDbType.VarChar,
+                SqlValue = NewSet.SetName
+            };
+            AddNewSet.Parameters.Add(SetNameParameter);
 
-                AddNewSets.ExecuteNonQuery();
-                AddNewSets.Parameters.Clear();
-            }
-            Confirmation = true;
+            SqlParameter ReleaseDateParameter = new SqlParameter
+            {
+                ParameterName = "ReleaseDate",
+                Direction = ParameterDirection.Input,
+                SqlDbType = SqlDbType.VarChar,
+                SqlValue = NewSet.ReleaseDate
+            };
+            AddNewSet.Parameters.Add(ReleaseDateParameter);
+
+            SetIDToPass = Convert.ToInt32(AddNewSet.ExecuteScalar().ToString());
+            
             StoreConnection.Close();
-            return Confirmation;
+
+            return SetIDToPass;
         }
     }
 }
