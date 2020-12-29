@@ -157,5 +157,59 @@ namespace TCG_Store_DAL.DataAccessControllers
             Success = true;
             return Success;
         }
+
+        public bool UpdateGame(GameDTO Game)
+        {
+            bool Success;
+
+            SqlConnection StoreConnection = new SqlConnection();
+            StoreConnection.ConnectionString = "Data Source=.;Initial Catalog=TCGStore;Persist Security Info=True;Integrated Security=true;";
+            StoreConnection.Open();
+
+            SqlCommand UpdateGame = new SqlCommand
+            {
+                CommandText = "UpdateGame",
+                CommandType = CommandType.StoredProcedure,
+                Connection = StoreConnection
+            };
+
+            SqlParameter GameIDParameter = new SqlParameter
+            {
+                ParameterName = "GameID",
+                Direction = ParameterDirection.Input,
+                SqlDbType = SqlDbType.Int,
+                SqlValue = Game.GameID
+            };
+            UpdateGame.Parameters.Add(GameIDParameter);
+
+            SqlParameter GameNameParameter = new SqlParameter
+            {
+                ParameterName = "GameName",
+                Direction = ParameterDirection.Input,
+                SqlDbType = SqlDbType.VarChar,
+                SqlValue = Game.GameName
+            };
+            UpdateGame.Parameters.Add(GameNameParameter);
+
+            SqlDataReader DataReader = UpdateGame.ExecuteReader();
+
+            if (DataReader.Read())
+            {
+                while (DataReader.Read())
+                {
+                    for (int Index = 0; Index < DataReader.FieldCount; Index++)
+                    {
+                        Game.GameID = int.Parse(DataReader["GameID"].ToString());
+                        Game.GameName = DataReader["GameName"].ToString();
+                    }
+                }
+            }
+
+            DataReader.Close();
+            StoreConnection.Close();
+
+            Success = true;
+            return Success;
+        }
     }
 }

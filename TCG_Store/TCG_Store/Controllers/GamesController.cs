@@ -55,7 +55,6 @@ namespace TCG_Store.Controllers
         [HttpPost]
         public bool Post([FromBody] Game NewGame)
         {
-            //return hhtp status code instead of bool
             bool Confirmation = false;
 
             GamesDataController DataController = new GamesDataController();
@@ -88,6 +87,31 @@ namespace TCG_Store.Controllers
             catch
             {
                 throw new Exception("Failed to delete the game");
+            }
+
+            return Confirmation;
+        }
+
+        [Route("{GameID:int}")]
+        [HttpPut]
+        public bool Put([FromBody] Game UpdatedGame)
+        {
+            bool Confirmation = false;
+
+            GamesDataController DataController = new GamesDataController();
+            GameDTO GameDTO = new GameDTO
+            {
+                GameID = UpdatedGame.GameID,
+                GameName = UpdatedGame.GameName
+            };
+
+            try
+            {
+                Confirmation = DataController.UpdateGame(GameDTO);
+            }
+            catch
+            {
+                throw new Exception("Failed to update a new Game");
             }
 
             return Confirmation;

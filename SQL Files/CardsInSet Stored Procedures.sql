@@ -68,5 +68,23 @@ AS
 		END
 RETURN @ReturnCode
 	
+CREATE PROCEDURE SeachForCardsByPartialName
+(
+	@SearchQuery VARCHAR(100)
+)
+AS
+	DECLARE @ReturnCode INT
+	SET @ReturnCode = 1
 
-SP_HELP CardsInSet
+	BEGIN
+		SELECT CardCodeInSet, CardName 
+		FROM CardsInSet
+		WHERE CardName LIKE '%' + @SearchQuery + '%'
+
+		IF @@ERROR = 0
+			SET @ReturnCode = 0
+		ELSE
+			RAISERROR('SearchForCardsByPartialName: Select failed', 16, 1)
+	END
+RETURN @ReturnCode
+
