@@ -232,12 +232,14 @@
     <Compile Include="APIResponseObjects\YugiohAPI\YugiohCardSet.cs" />
     <Compile Include="DataAccessControllers\CardDataController.cs" />
     <Compile Include="DataAccessControllers\GamesDataController.cs" />
+    <Compile Include="DataAccessControllers\SealedProductDataController.cs" />
     <Compile Include="DataAccessControllers\SetDataController.cs" />
     <Compile Include="DTOs\CardDTO.cs" />
     <Compile Include="DTOs\GameDTO.cs" />
     <Compile Include="APIResponseObjects\YugiohAPI\YgoSetAPIResponse.cs" />
+    <Compile Include="DTOs\QualityDTO.cs" />
+    <Compile Include="DTOs\SealedProductDTO.cs" />
     <Compile Include="DTOs\SetDTO.cs" />
-    <Compile Include="DTOs\YuGiOhDTO.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

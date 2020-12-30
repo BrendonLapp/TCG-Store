@@ -68,7 +68,8 @@ AS
 		END
 RETURN @ReturnCode
 	
-ALTER PROCEDURE SeachForCardsByPartialName
+
+CREATE PROCEDURE SeachForCardsByPartialName
 (
 	@SearchQuery VARCHAR(100)
 )
@@ -98,6 +99,3 @@ AS
 			RAISERROR('SearchForCardsByPartialName: Select failed', 16, 1)
 	END
 RETURN @ReturnCode
-
-SELECT * FROM CardsInSet
-

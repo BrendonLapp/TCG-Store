@@ -1,27 +1,37 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using TCG_Store.Models;
 using TCG_Store_DAL.APIResponseObjects.PokemonAPI;
 using TCG_Store_DAL.APIResponseObjects.YugiohAPI;
-using System.Net.Http;
-using TCG_Store_DAL.DTOs;
-using Newtonsoft.Json;
 using TCG_Store_DAL.DataAccessControllers;
-using Microsoft.AspNetCore.Mvc;
-using TCG_Store.Models;
+using TCG_Store_DAL.DTOs;
 
 namespace TCG_Store.Controllers
 {
+    /// <summary>
+    /// The API Controller for the Cards Endpoint
+    /// </summary>
     [Route("api/v1/Cards")]
     [ApiController]
     public class CardController
     {
-        [HttpPost("AddYugiohCards/SetID={SetID}/SetName=/{SetName}/SetCode={SetCode}")]
+        /// <summary>
+        /// Http Post Method for adding Yugioh Crads. Performs an HTTP request for the card sets and then saves all the new cards in that set to the DB.
+        /// </summary>
+        /// <param name="SetID">ID of the set being saved</param>
+        /// <param name="SetName">Name of the set being saved</param>
+        /// <param name="SetCode">Set Code of the set being saved</param>
+        /// <returns></returns>
+        [HttpPost("AddYugiohCards/{SetID}/{SetName}/{SetCode}")]
         public async Task AddYugiohCards(int SetID, string SetName, string SetCode)
         {
             bool Success;
+            CardDataController CardDataController = new CardDataController();
 
             YugiohAPIResponseRoot YugiohResponse = new YugiohAPIResponseRoot();
             using (var HttpClient = new HttpClient())
@@ -35,54 +45,93 @@ namespace TCG_Store.Controllers
 
             YugiohCardDetails yugiohCardDetails = new YugiohCardDetails();
 
-            foreach (var CardData in YugiohResponse.data)
+            if (YugiohResponse.data != null)
             {
-                if (CardData.card_sets != null)
+                foreach (var CardData in YugiohResponse.data)
                 {
-                    foreach (var Card in CardData.card_sets)
+                    if (CardData.card_sets != null)
                     {
-                        if (Card.set_code.Contains(SetCode))
+                        foreach (var CardVariant in CardData.card_sets)
                         {
-                            using (var HttpClient = new HttpClient())
+                           
+                            CardDTO NewCard = new CardDTO
                             {
-                                using (var Response = await HttpClient.GetAsync("https://db.ygoprodeck.com/api/v7/cardsetsinfo.php?setcode=" + Card.set_code))
-                                {
-                                    string CardDetails = await Response.Content.ReadAsStringAsync();
-                                    yugiohCardDetails = JsonConvert.DeserializeObject<YugiohCardDetails>(CardDetails);
-                                }
+                                SetID = SetID,
+                                CardName = CardData.name,
+                                ElementalType = CardData.attribute,
+                                SubType = CardData.race,
+                                SuperType = CardData.type,
+                                APIImageID = CardData.id,
+                                PictureLink = "https://storage.googleapis.com/ygoprodeck.com/pics/" + CardData.id + ".jpg",
+                                PictureSmallLink = "https://storage.googleapis.com/ygoprodeck.com/pics_small/" + 50781944 + ".jpg",
+                                CardCodeInSet = CardVariant.set_code,
+                                Price = CardVariant.set_price,
+                                Rarity = CardVariant.set_rarity
+                            };
 
-                                CardDTO CardDTO = new CardDTO
-                                {
-                                    SetID = SetID,
-                                    CardCodeInSet = yugiohCardDetails.set_code,
-                                    CardName = CardData.name,
-                                    Rarity = yugiohCardDetails.set_rarity,
-                                    Price = yugiohCardDetails.set_price,
-                                    APIImageID = yugiohCardDetails.id,
-                                    SubType = CardData.race,
-                                    SuperType = CardData.type,
-                                    ElementalType = CardData.attribute,
-                                    PictureLink = "https://storage.googleapis.com/ygoprodeck.com/pics/" + yugiohCardDetails.id + ".jpg",
-                                    PictureSmallLink = "https://storage.googleapis.com/ygoprodeck.com/pics_small/" + yugiohCardDetails.id + ".jpg"
-                                };
-
-                                CardDataController CardDataController = new CardDataController();
-
-                                Success = CardDataController.AddCard(CardDTO);
+                            if (NewCard.CardCodeInSet.Contains(SetCode))
+                            {
+                                Success = CardDataController.AddCard(NewCard);
 
                                 if (Success == false)
                                 {
                                     throw new Exception("Failed to insert a YuGiOh card into CardsInSet");
                                 }
                             }
-                        }          
+                        }
+
+                        #region potential broken code
+                        //foreach (var Card in CardData.card_sets)
+                        //{
+                        //    if (Card.set_code.Contains(SetCode))
+                        //    {
+                        //        using (var HttpClient = new HttpClient())
+                        //        {
+                        //            using (var Response = await HttpClient.GetAsync("https://db.ygoprodeck.com/api/v7/cardsetsinfo.php?setcode=" + Card.set_code))
+                        //            {
+                        //                string CardDetails = await Response.Content.ReadAsStringAsync();
+                        //                yugiohCardDetails = JsonConvert.DeserializeObject<YugiohCardDetails>(CardDetails);
+                        //            }
+
+                        //            CardDTO CardDTO = new CardDTO
+                        //            {
+                        //                SetID = SetID,
+                        //                CardCodeInSet = yugiohCardDetails.set_code,
+                        //                CardName = CardData.name,
+                        //                Rarity = yugiohCardDetails.set_rarity,
+                        //                Price = yugiohCardDetails.set_price,
+                        //                APIImageID = yugiohCardDetails.id,
+                        //                SubType = CardData.race,
+                        //                SuperType = CardData.type,
+                        //                ElementalType = CardData.attribute,
+                        //                PictureLink = "https://storage.googleapis.com/ygoprodeck.com/pics/" + yugiohCardDetails.id + ".jpg",
+                        //                PictureSmallLink = "https://storage.googleapis.com/ygoprodeck.com/pics_small/" + yugiohCardDetails.id + ".jpg"
+                        //            };
+
+                        //            CardDataController CardDataController = new CardDataController();
+
+                        //            Success = CardDataController.AddCard(CardDTO);
+
+                        //            if (Success == false)
+                        //            {
+                        //                throw new Exception("Failed to insert a YuGiOh card into CardsInSet");
+                        //            }
+                        //        }
+                        //    }
+                        //}
+                        #endregion
                     }
                 }
             }
-
         }
 
-        [HttpPost("AddPokemonCards/SetID={SetID}/SetCode={SetCode}")]
+        /// <summary>
+        /// Http Post Method for adding Pokemon Crads. Performs an HTTP request for the card sets and then saves all the new cards in that set to the DB.
+        /// </summary>
+        /// <param name="SetID">The ID of the set being saved</param>
+        /// <param name="SetCode">The Set Code of the set being saved</param>
+        /// <returns></returns>
+        [HttpPost("AddPokemonCards/{SetID}/{SetCode}")]
         public async Task AddPokemonCards(int SetID, string SetCode)
         {
             bool Success;
@@ -135,6 +184,11 @@ namespace TCG_Store.Controllers
             }
         }
 
+        /// <summary>
+        /// Performs a search query and builds a list of all matches to be sent to the UI of that query.
+        /// </summary>
+        /// <param name="SearchQuery">A user entered serach query used to find matches.</param>
+        /// <returns>List of Card Objects</returns>
         [HttpGet("{SearchQuery}")]
         public List<Card> Get(string SearchQuery)
         {

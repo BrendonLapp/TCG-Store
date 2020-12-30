@@ -153,3 +153,48 @@ ELSE
 	END
 RETURN @ReturnCode
 
+CREATE PROCEDURE GetAllSealedProduct
+AS
+	DECLARE @ReturnCode INT
+	SET @ReturnCode = 1
+
+	BEGIN
+		SELECT
+			SealedProductID,
+			SetID,
+			SealedProductName
+		FROM SealedProduct
+
+		IF @@ERROR = 0
+			SET @ReturnCode = 0
+		ELSE
+			BEGIN
+				RAISERROR('GetAllSealedProduct: Failed to select from Sealed Product table', 16, 1)
+			END
+	END
+RETURN @ReturnCode
+
+CREATE PROCEDURE GetSealedProductByGame
+(
+	@GameID INT = NULL
+)
+AS
+	IF @GameID IS NULL	
+		RAISERROR('GetSealedProductByGame: GameID cannot be null', 16, 1)
+	ELSE
+		DECLARE @ReturnCode INT
+		SET @ReturnCode = 1
+
+		BEGIN
+			SELECT
+				SealedProductID,
+				SealedProduct.SetID,
+				SealedProductName
+			FROM SealedProduct
+			INNER JOIN [Set]
+			ON SealedProduct.SetID = [Set].SetID
+			INNER JOIN Game
+			ON [Set].GameID = Game.GameID
+			WHERE Game.GameID = @GameID
+		END
+RETURN @ReturnCode

@@ -7,11 +7,17 @@ using TCG_Store_DAL.DTOs;
 
 namespace TCG_Store.Controllers
 {
+    /// <summary>
+    /// The API Controller for the Games Endpoint
+    /// </summary>
     [Route("api/v1/Games")]
     [ApiController]
     public class GamesController : ControllerBase
     {
-        // GET: api/Game
+        /// <summary>
+        /// Performs a Get request for all Games in the DB
+        /// </summary>
+        /// <returns>List of Game Objects</returns>
         [HttpGet]
         public List<Game> Get()
         {
@@ -35,7 +41,11 @@ namespace TCG_Store.Controllers
             return AllGames;
         }
 
-        // GET api/<GamesController>/5
+        /// <summary>
+        /// Performs a Get request for a game specified by the GameID
+        /// </summary>
+        /// <param name="GameID">ID Of the game to be serached</param>
+        /// <returns>Game Objects with the data of the searched Game</returns>
         [HttpGet("{GameID}")]
         public Game Get(int GameID)
         {
@@ -51,7 +61,11 @@ namespace TCG_Store.Controllers
             return Game;
         }
 
-        // POST api/<GamesController>
+        /// <summary>
+        /// Performs a Post request containing the NewGame information
+        /// </summary>
+        /// <param name="NewGame">Game object created from the post body</param>
+        /// <returns>Confirmation as a bool</returns>
         [HttpPost]
         public bool Post([FromBody] Game NewGame)
         {
@@ -71,7 +85,11 @@ namespace TCG_Store.Controllers
             return Confirmation;
         }
 
-        //DELETE api/v1/<Gamescontroller>/1
+        /// <summary>
+        /// Performs a delete request based on a supplied GameID
+        /// </summary>
+        /// <param name="GameID">The supplied GameID</param>
+        /// <returns>Cofirmation as a bool</returns>
         [Route("{GameID:int}")]
         [HttpDelete]
         public bool Delete(int GameID)
@@ -92,7 +110,12 @@ namespace TCG_Store.Controllers
             return Confirmation;
         }
 
-        [Route("{GameID:int}")]
+        /// <summary>
+        /// Performs a Put request containing the UpdatedGame information
+        /// </summary>
+        /// <param name="UpdatedGame">Game object created from the post body</param>
+        /// <returns>Confirmation as a bool</returns>
+        [Route("{Game}")]
         [HttpPut]
         public bool Put([FromBody] Game UpdatedGame)
         {

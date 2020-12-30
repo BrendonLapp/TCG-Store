@@ -8,10 +8,11 @@ namespace TCG_Store_DAL.APIResponseObjects.YugiohAPI
 {
     public class YugiohAPIResponse
     {
+        public string id { get; set; }
         public string name { get; set; }
         public string type { get; set; }
         public string race { get; set; }
         public string attribute { get; set; }
-        public List<YugiohCardSet> card_sets { get; set; }
+        public List<YugiohCardDetails> card_sets { get; set; }
     }
 }

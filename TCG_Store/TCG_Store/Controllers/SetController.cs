@@ -14,11 +14,17 @@ using TCG_Store_DAL.DTOs;
 
 namespace TCG_Store.Controllers
 {
+    /// <summary>
+    /// The API Controller for the Sets Endpoint
+    /// </summary>
     [Route("api/v1/Set")]
     [ApiController]
     public class SetController : ControllerBase
     {
-        // GET: api/<SetController>
+        /// <summary>
+        /// Performs a Get request for all sets in the DB
+        /// </summary>
+        /// <returns>List of Set Objects</returns>
         [HttpGet]
         public List<Set> Get()
         {
@@ -40,13 +46,22 @@ namespace TCG_Store.Controllers
             return AllSets;
         }
 
-        // GET api/<SetController>/5
+        /// <summary>
+        /// Performs a Get request for a game specified by the SetID
+        /// </summary>
+        /// <param name="SetID">ID Of the Set to be serached</param>
+        /// <returns>Set Object with the data of the searched Set</returns>
         [HttpGet("{SetID}")]
         public string Get(int SetID)
         {
             return "value";
         }
 
+        /// <summary>
+        /// Performs a Post request to the DB based on the GameID and performs Get Requests depening on the game to the external API's
+        /// </summary>
+        /// <param name="GameID">GameID supplied to filter the sets to be added by game</param>
+        /// <returns></returns>
         [Route("PostNewSets/{GameID}")]
         [HttpPost]
         public async Task<bool> PostNewSets(int GameID)
@@ -125,7 +140,7 @@ namespace TCG_Store.Controllers
                 {
                     SetID = SetDataController.AddNonExistingSetsToDataBase(Set);
 
-                    switch(GameDTO.GameName )
+                    switch(GameDTO.GameName)
                     {
                         case "Yu-Gi-Oh":
                             await CardController.AddYugiohCards(SetID, Set.SetName, Set.SetCode);
@@ -141,8 +156,13 @@ namespace TCG_Store.Controllers
             return Success;
         }
 
+        /// <summary>
+        /// Performs a Get request based on the supplied GameID
+        /// </summary>
+        /// <param name="GameID">Supplied GameID</param>
+        /// <returns>List of Set objects</returns>
         [Route("GetSetsByGame/{GameID}")]
-        [HttpGet("{GameID}")]
+        [HttpGet]
         public List<Set> GetSetsByGame(int GameID)
         {
             List<Set> SetsByGame = new List<Set>();
