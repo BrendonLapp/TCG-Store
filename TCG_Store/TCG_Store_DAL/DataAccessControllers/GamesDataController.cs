@@ -5,6 +5,9 @@ using TCG_Store_DAL.DTOs;
 
 namespace TCG_Store_DAL.DataAccessControllers
 {
+    /// <summary>
+    /// Data controller for the Games 
+    /// </summary>
     public class GamesDataController
     {
         /// <summary>

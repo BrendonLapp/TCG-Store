@@ -1,7 +1,6 @@
 CREATE PROCEDURE InsertSealedProduct
 	@SetID INT = NULL,
-	@SealedProductName VARCHAR(30) = NULL,
-	@Quantity INT = NULL,
+	@SealedProductName VARCHAR(30) = NULL
 	@Price MONEY = NULL
 AS
 
@@ -12,17 +11,15 @@ IF @SetID IS NULL
 	RAISERROR('InsertSealedProduct: Set ID cannot be null', 16, 1)
 	IF @SealedProductName IS NULL
 		RAISERROR('InsertSealedProduct: Sealed Product Name cannot be null', 16, 1)
-		IF @Quantity IS NULL
-			RAISERROR('InsertSealedProduct: Quantity cannot be null', 16, 1)
 			IF @Price IS NULL
 				RAISERROR('InsertSealedProduct: Price cannot be null', 16, 1)
 ELSE
 	BEGIN
 		BEGIN TRANSACTION
 		INSERT INTO SealedProduct
-		(SetID, SealedProductName, Quantity, Price)
+		(SetID, SealedProductName, Price)
 		VALUES
-		(@SetID, @SealedProductName, @Quantity, @Price)
+		(@SetID, @SealedProductName, @Price)
 		IF @@ERROR = 0
 			BEGIN
 				SET @ReturnCode = 0
@@ -41,7 +38,6 @@ CREATE PROCEDURE UpdateSealedProduct
 	@SealedProductID INT = NULL,
 	@SetID INT = NULL,
 	@SealedProductName VARCHAR(30) = NULL,
-	@Quantity INT = NULL,
 	@Price MONEY = NULL
 AS
 
@@ -58,7 +54,6 @@ ELSE
 			SealedProductID = @SealedProductID,
 			SetID = @SetID,
 			SealedProductName = @SealedProductName,
-			Quantity = @Quantity,
 			Price = @Price
 		WHERE SealedProductID = @SealedProductID
 		IF @@ERROR = 0

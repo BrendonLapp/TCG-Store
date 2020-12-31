@@ -5,6 +5,9 @@ using TCG_Store_DAL.DTOs;
 
 namespace TCG_Store_DAL.DataAccessControllers
 {
+    /// <summary>
+    /// Data controller for sealed product
+    /// </summary>
     public class SealedProductDataController
     {
         public List<SealedProductDTO> GetAllSealedProducts ()

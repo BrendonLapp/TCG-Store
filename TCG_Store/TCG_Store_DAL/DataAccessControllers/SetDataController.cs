@@ -6,6 +6,9 @@ using TCG_Store_DAL.DTOs;
 
 namespace TCG_Store_DAL.DataAccessControllers
 {
+    /// <summary>
+    /// Data controller for sets
+    /// </summary>
     public class SetDataController
     {
         public List<SetDTO> GetAllSets()

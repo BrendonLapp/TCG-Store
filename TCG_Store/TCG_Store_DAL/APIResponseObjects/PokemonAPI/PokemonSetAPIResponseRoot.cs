@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TCG_Store_DAL.APIResponseObjects
+﻿namespace TCG_Store_DAL.APIResponseObjects
 {
+    /// <summary>
+    /// Set API reponse root object from the Pokemon TCG API
+    /// </summary>
     public class PokemonSetAPIResponseRoot
     {
+        /// <summary>
+        /// Array of the sets in the API response
+        /// </summary>
         public PokemonSetAPIResponse[] sets { get; set; }
     }
 }

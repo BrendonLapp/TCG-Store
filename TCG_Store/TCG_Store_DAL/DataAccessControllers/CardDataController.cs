@@ -5,8 +5,16 @@ using TCG_Store_DAL.DTOs;
 
 namespace TCG_Store_DAL.DataAccessControllers
 {
+    /// <summary>
+    /// Data controller for Cards
+    /// </summary>
     public class CardDataController
     {
+        /// <summary>
+        /// Adds a new card to the database
+        /// </summary>
+        /// <param name="NewCard">CardDTO object for the new card</param>
+        /// <returns>Success as a bool</returns>
         public bool AddCard(CardDTO NewCard)
         {
             bool Success;
@@ -129,6 +137,11 @@ namespace TCG_Store_DAL.DataAccessControllers
             return Success;
         }
 
+        /// <summary>
+        /// Searchs for cards by a partial query string. Returns a list of CardDTOs containing the SearchQuery
+        /// </summary>
+        /// <param name="SearchQuery">Input from the user</param>
+        /// <returns>List of CardDTOs</returns>
         public List<CardDTO> SearchCardsByPartialName(string SearchQuery)
         {
             List<CardDTO> CardsMatchingQuery = new List<CardDTO>();

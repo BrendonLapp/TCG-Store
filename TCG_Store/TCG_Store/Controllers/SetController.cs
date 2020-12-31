@@ -10,8 +10,6 @@ using TCG_Store_DAL.DataAccessControllers;
 using TCG_Store_DAL.APIResponseObjects.YugiohAPI;
 using TCG_Store_DAL.DTOs;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace TCG_Store.Controllers
 {
     /// <summary>

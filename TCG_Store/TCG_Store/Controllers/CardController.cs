@@ -43,8 +43,6 @@ namespace TCG_Store.Controllers
                 }
             }
 
-            YugiohCardDetails yugiohCardDetails = new YugiohCardDetails();
-
             if (YugiohResponse.data != null)
             {
                 foreach (var CardData in YugiohResponse.data)
@@ -79,47 +77,6 @@ namespace TCG_Store.Controllers
                                 }
                             }
                         }
-
-                        #region potential broken code
-                        //foreach (var Card in CardData.card_sets)
-                        //{
-                        //    if (Card.set_code.Contains(SetCode))
-                        //    {
-                        //        using (var HttpClient = new HttpClient())
-                        //        {
-                        //            using (var Response = await HttpClient.GetAsync("https://db.ygoprodeck.com/api/v7/cardsetsinfo.php?setcode=" + Card.set_code))
-                        //            {
-                        //                string CardDetails = await Response.Content.ReadAsStringAsync();
-                        //                yugiohCardDetails = JsonConvert.DeserializeObject<YugiohCardDetails>(CardDetails);
-                        //            }
-
-                        //            CardDTO CardDTO = new CardDTO
-                        //            {
-                        //                SetID = SetID,
-                        //                CardCodeInSet = yugiohCardDetails.set_code,
-                        //                CardName = CardData.name,
-                        //                Rarity = yugiohCardDetails.set_rarity,
-                        //                Price = yugiohCardDetails.set_price,
-                        //                APIImageID = yugiohCardDetails.id,
-                        //                SubType = CardData.race,
-                        //                SuperType = CardData.type,
-                        //                ElementalType = CardData.attribute,
-                        //                PictureLink = "https://storage.googleapis.com/ygoprodeck.com/pics/" + yugiohCardDetails.id + ".jpg",
-                        //                PictureSmallLink = "https://storage.googleapis.com/ygoprodeck.com/pics_small/" + yugiohCardDetails.id + ".jpg"
-                        //            };
-
-                        //            CardDataController CardDataController = new CardDataController();
-
-                        //            Success = CardDataController.AddCard(CardDTO);
-
-                        //            if (Success == false)
-                        //            {
-                        //                throw new Exception("Failed to insert a YuGiOh card into CardsInSet");
-                        //            }
-                        //        }
-                        //    }
-                        //}
-                        #endregion
                     }
                 }
             }
