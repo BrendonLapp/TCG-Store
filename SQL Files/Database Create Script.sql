@@ -72,29 +72,14 @@ ALTER TABLE [Set]
 CREATE TABLE SealedProduct (
 	SealedProductID INT NOT NULL IDENTITY(20000000,1),
 	SetID INT NOT NULL,
-	SealedProductName VARCHAR(150) NOT NULL
+	SealedProductName VARCHAR(150) NOT NULL,
+	Price MONEY NOT NULL
 );
 
 ALTER TABLE SealedProduct
 	ADD CONSTRAINT PK_SealedProductID PRIMARY KEY (SealedProductID);
 ALTER TABLE SealedProduct
 	ADD CONSTRAINT FK_SealedProductSetID FOREIGN KEY(SetID) REFERENCES [Set](SetID);
-
-----Identity increasee for MTG = 5, PKMN = 4
---CREATE TABLE YuGiOh (
---	YugiohID INT NOT NULL IDENTITY(30000000,1),
---	CardName VARCHAR(50) NOT NULL,
---	Description VARCHAR(1000) NOT NULL,
---	ATK INT NULL,
---	DEF INT NULL,
---	Level INT NULL,
---	Type VARCHAR(30),
---	Attribute VARCHAR(15),
---	CardType VARCHAR(15)
---);
-
---ALTER TABLE Yugioh
---	ADD CONSTRAINT PK_YugiohID PRIMARY KEY (YugiohID);
 
 CREATE TABLE CardsInSet (
 	CardID INT NOT NULL IDENTITY(1,1),
@@ -136,7 +121,7 @@ ALTER TABLE Inventory
 
 CREATE TABLE Quality (
 	QualityID INT NOT NULL IDENTITY(1,1),
-	QualityPercentage DECIMAL(5,2) NOT NULL,
+	[Percentage] DECIMAL(5,2) NOT NULL,
 	QualityName VARCHAR(25) NOT NULL,
 	QualityShortName VARCHAR(2) NOT NULL
 );

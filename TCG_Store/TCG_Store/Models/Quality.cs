@@ -9,7 +9,7 @@
         /// <summary>
         /// The percentage that the quality will be discounted by
         /// </summary>
-        public decimal QualityPercentage { get; set; }
+        public decimal Percentage { get; set; }
         /// <summary>
         /// The full name of the quality
         /// </summary>

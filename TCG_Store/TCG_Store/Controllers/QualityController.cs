@@ -1,11 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using TCG_Store.Models;
-using TCG_Store_DAL.DTOs;
 using TCG_Store_DAL.DataAccessControllers;
+using TCG_Store_DAL.DTOs;
 
 namespace TCG_Store.Controllers
 {
@@ -28,7 +25,7 @@ namespace TCG_Store.Controllers
                 {
                     QualityID = Quality.QualityID,
                     QualityName = Quality.QualityName,
-                    QualityPercentage = Quality.QualityPercentage,
+                    Percentage = Quality.Percentage,
                     QualityShortName = Quality.QualityShortName
                 };
                 AllQualities.Add(IncomingQuality);
@@ -48,7 +45,7 @@ namespace TCG_Store.Controllers
             FoundQuality.QualityID = QualityDTO.QualityID;
             FoundQuality.QualityName = QualityDTO.QualityName;
             FoundQuality.QualityShortName = QualityDTO.QualityShortName;
-            FoundQuality.QualityPercentage = QualityDTO.QualityPercentage;
+            FoundQuality.Percentage = QualityDTO.Percentage;
 
             return FoundQuality;
         }
@@ -63,7 +60,7 @@ namespace TCG_Store.Controllers
             QualityDTO NewQualityDTO = new QualityDTO
             {
                 QualityName = NewQuality.QualityName,
-                QualityPercentage = NewQuality.QualityPercentage,
+                Percentage = NewQuality.Percentage,
                 QualityShortName = NewQuality.QualityShortName
             };
 
@@ -84,7 +81,7 @@ namespace TCG_Store.Controllers
                 QualityID = UpdatedQuality.QualityID,
                 QualityName = UpdatedQuality.QualityName,
                 QualityShortName = UpdatedQuality.QualityShortName,
-                QualityPercentage = UpdatedQuality.QualityPercentage
+                Percentage = UpdatedQuality.Percentage
             };
 
             Success = QualityDataController.UpdateQuality(UpdatingQuality);

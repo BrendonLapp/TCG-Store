@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TCG_Store_DAL.DTOs;
+﻿using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
+using TCG_Store_DAL.DTOs;
 
 namespace TCG_Store_DAL.DataAccessControllers
 {
@@ -52,7 +48,7 @@ namespace TCG_Store_DAL.DataAccessControllers
                     for (int Index = 0; Index < DataReader.FieldCount; Index++)
                     {
                         FoundQuality.QualityID = int.Parse(DataReader["QualityID"].ToString());
-                        FoundQuality.QualityPercentage = decimal.Parse(DataReader["QualityPercentage"].ToString());
+                        FoundQuality.Percentage = decimal.Parse(DataReader["Percentage"].ToString());
                         FoundQuality.QualityName = DataReader["QualityName"].ToString();
                         FoundQuality.QualityShortName = DataReader["QualityShortName"].ToString();
                     }
@@ -93,7 +89,7 @@ namespace TCG_Store_DAL.DataAccessControllers
                     for (int Index = 0; Index < DataReader.FieldCount; Index++)
                     {
                         IncomingQuality.QualityID = int.Parse(DataReader["QualityID"].ToString());
-                        IncomingQuality.QualityPercentage = decimal.Parse(DataReader["QualityPercentage"].ToString());
+                        IncomingQuality.Percentage = decimal.Parse(DataReader["Percentage"].ToString());
                         IncomingQuality.QualityName = DataReader["QualityName"].ToString();
                         IncomingQuality.QualityShortName = DataReader["QualityShortName"].ToString();
                     }
@@ -144,14 +140,14 @@ namespace TCG_Store_DAL.DataAccessControllers
             };
             InsertIntoQuality.Parameters.Add(QualityShortNameParameter);
 
-            SqlParameter QualityPercentageParamter = new SqlParameter
+            SqlParameter PercentageParamter = new SqlParameter
             {
-                ParameterName = "QualityPercentage",
+                ParameterName = "Percentage",
                 Direction = ParameterDirection.Input,
                 SqlDbType = SqlDbType.Decimal,
-                SqlValue = NewQuality.QualityPercentage
+                SqlValue = NewQuality.Percentage
             };
-            InsertIntoQuality.Parameters.Add(QualityPercentageParamter);
+            InsertIntoQuality.Parameters.Add(PercentageParamter);
             try
             {
                 InsertIntoQuality.ExecuteNonQuery();
@@ -203,14 +199,14 @@ namespace TCG_Store_DAL.DataAccessControllers
             };
             UpdateQuality.Parameters.Add(QualityNameParameter);
 
-            SqlParameter QualityPercentageParameter = new SqlParameter
+            SqlParameter PercentageParameter = new SqlParameter
             {
-                ParameterName = "QualityPercentage",
+                ParameterName = "Percentage",
                 Direction = ParameterDirection.Input,
                 SqlDbType = SqlDbType.Decimal,
-                SqlValue = UpdatedQuality.QualityPercentage
+                SqlValue = UpdatedQuality.Percentage
             };
-            UpdateQuality.Parameters.Add(QualityPercentageParameter);
+            UpdateQuality.Parameters.Add(PercentageParameter);
 
             SqlParameter QualityShortNameParameter = new SqlParameter
             {

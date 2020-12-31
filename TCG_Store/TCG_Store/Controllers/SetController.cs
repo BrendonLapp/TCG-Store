@@ -45,17 +45,6 @@ namespace TCG_Store.Controllers
         }
 
         /// <summary>
-        /// Performs a Get request for a game specified by the SetID
-        /// </summary>
-        /// <param name="SetID">ID Of the Set to be serached</param>
-        /// <returns>Set Object with the data of the searched Set</returns>
-        [HttpGet("{SetID}")]
-        public string Get(int SetID)
-        {
-            return "value";
-        }
-
-        /// <summary>
         /// Performs a Post request to the DB based on the GameID and performs Get Requests depening on the game to the external API's
         /// </summary>
         /// <param name="GameID">GameID supplied to filter the sets to be added by game</param>
