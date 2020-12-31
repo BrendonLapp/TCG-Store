@@ -73,9 +73,36 @@ namespace TCG_Store.Controllers
         }
 
         [HttpPut]
-        public bool Update([FromBody] Quality UpdatedQuality)
+        public bool Update ([FromBody] Quality UpdatedQuality)
         {
+            bool Success;
 
+            QualityDataController QualityDataController = new QualityDataController();
+
+            QualityDTO UpdatingQuality = new QualityDTO
+            {
+                QualityID = UpdatedQuality.QualityID,
+                QualityName = UpdatedQuality.QualityName,
+                QualityShortName = UpdatedQuality.QualityShortName,
+                QualityPercentage = UpdatedQuality.QualityPercentage
+            };
+
+            Success = QualityDataController.UpdateQuality(UpdatingQuality);
+
+            return Success;
+        }
+
+        [Route("{QualityID}")]
+        [HttpPost]
+        public bool Delete (int QualityID)
+        {
+            bool Success;
+
+            QualityDataController QualityDataController = new QualityDataController();
+
+            Success = QualityDataController.DeleteQuality(QualityID);
+
+            return Success;
         }
     }
 }
