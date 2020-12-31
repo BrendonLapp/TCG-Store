@@ -9,9 +9,9 @@ namespace TCG_Store.Controllers
     /// <summary>
      /// The API Controller for the SealedProduct Endpoint
      /// </summary>
-    [Route("api/v1/SealedProduct")]
+    [Route("api/v1/SealedProducts")]
     [ApiController]
-    public class SealedProductController
+    public class SealedProductController : ControllerBase
     {
         /// <summary>
         /// Performs a get request for all sealed products in the database

@@ -15,7 +15,7 @@ namespace TCG_Store.Controllers
     /// <summary>
     /// The API Controller for the Sets Endpoint
     /// </summary>
-    [Route("api/v1/Set")]
+    [Route("api/v1/Sets")]
     [ApiController]
     public class SetController : ControllerBase
     {

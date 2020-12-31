@@ -14,7 +14,7 @@ namespace TCG_Store.Controllers
     /// </summary>
     [Route("/api/v1/Inventory")]
     [ApiController]
-    public class InventoryController
+    public class InventoryController : ControllerBase
     {
         /// <summary>
         /// Performs a Get request for all inventory items in the DB

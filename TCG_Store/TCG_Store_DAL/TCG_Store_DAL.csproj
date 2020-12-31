@@ -232,6 +232,8 @@
     <Compile Include="DataAccessControllers\CardDataController.cs" />
     <Compile Include="DataAccessControllers\GamesDataController.cs" />
     <Compile Include="DataAccessControllers\InventoryDataController.cs" />
+    <Compile Include="DataAccessControllers\OrderDataController.cs" />
+    <Compile Include="DataAccessControllers\OrderItemDataController.cs" />
     <Compile Include="DataAccessControllers\QualityDataController.cs" />
     <Compile Include="DataAccessControllers\SealedProductDataController.cs" />
     <Compile Include="DataAccessControllers\SetDataController.cs" />
@@ -239,6 +241,8 @@
     <Compile Include="DTOs\GameDTO.cs" />
     <Compile Include="APIResponseObjects\YugiohAPI\YgoSetAPIResponse.cs" />
     <Compile Include="DTOs\InventoryDTO.cs" />
+    <Compile Include="DTOs\OrderDTO.cs" />
+    <Compile Include="DTOs\OrderItem.cs" />
     <Compile Include="DTOs\QualityDTO.cs" />
     <Compile Include="DTOs\SealedProductDTO.cs" />
     <Compile Include="DTOs\SetDTO.cs" />

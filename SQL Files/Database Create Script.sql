@@ -14,39 +14,28 @@ DROP TABLE Customer;
 DROP TABLE Administrator;
 
 CREATE TABLE Administrator (
-	AdminID INT NOT NULL IDENTITY(1,1),
+	Email VARCHAR(30) NOT NULL,
 	FirstName VARCHAR(15) NOT NULL,
 	LastName VARCHAR(15) NOT NULL,
-	[Password] VARCHAR(20) NOT NULL,
-	Email VARCHAR(30) NOT NULL
+	[Password] VARCHAR(20) NOT NULL	
 );
 
 ALTER TABLE Administrator
-	ADD CONSTRAINT PK_AdminID PRIMARY KEY (AdminID);
+	ADD CONSTRAINT PK_AdminEmail PRIMARY KEY (Email);
 ALTER TABLE Administrator
 	ADD CONSTRAINT CK_AdminEmail CHECK (Email LIKE '%___@%___.%___');
 
 CREATE TABLE Customer (
-	CustomerID INT NOT NULL IDENTITY(10000000,1),
+	Email VARCHAR(30) NOT NULL,
 	FirstName VARCHAR(15) NOT NULL,
 	LastName VARCHAR(15) NOT NULL,
-	Password VARCHAR(20) NOT NULL,
-	Email VARCHAR(30) NOT NULL,
-	Address VARCHAR(50) NULL,
-	PostalCode VARCHAR(7) NULL,
-	City VARCHAR(40) NULL,
-	Province VARCHAR(25) NULL,
-	PhoneNumber INT NULL
+	Password VARCHAR(20) NOT NULL	
 );
 
 ALTER TABLE Customer
-	ADD CONSTRAINT PK_CustomerID PRIMARY KEY (CustomerID);
+	ADD CONSTRAINT PK_CustomerEmail PRIMARY KEY (Email);
 ALTER TABLE Customer
 	ADD CONSTRAINT CK_CustomerEmail CHECK (Email LIKE '%___@%___.%___');
-ALTER TABLE Customer
-	ADD CONSTRAINT CK_CustomerPostalCode CHECK (PostalCode LIKE '[A-Z][0-9][A-Z] [0-9][A-Z][0-9]');
-ALTER TABLE Customer
-	ADD CONSTRAINT CK_PhoneNumber CHECK (PhoneNumber LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')
 
 CREATE TABLE Game (
 	GameID INT NOT NULL IDENTITY (1,1),
@@ -133,9 +122,12 @@ CREATE TABLE [Order] (
 	OrderID INT NOT NULL IDENTITY(80000000,1),
 	CustomerID INT NOT NULL,
 	AdminID INT NULL,
-	ShippingType VARCHAR(15) NOT NULL,
-	ShippingStatus VARCHAR(15) NULL,
+	ShippingID INT NOT NULL,
+	StatusID INT NOT NULL,
 	ShippingAddress VARCHAR(50) NOT NULL,
+	PostalCode VARCHAR(7) NULL,
+	City VARCHAR(40) NULL,
+	Province VARCHAR(25) NULL,
 	ShippingPrice MONEY NULL,
 	SaleDate DATE NOT NULL,
 	UpdatedBy VARCHAR(20) NULL,
@@ -152,6 +144,12 @@ ALTER TABLE [Order]
 	ADD CONSTRAINT FK_OrderCustomerID FOREIGN KEY(CustomerID) REFERENCES Customer(CustomerID);
 ALTER TABLE [Order]
 	ADD CONSTRAINT FK_OrderAdminID FOREIGN KEY (AdminID) REFERENCES Administrator(AdminID);
+ALTER TABLE [Order]
+	ADD CONSTRAINT FK_OrderShippingID FOREIGN KEY (ShippingID) REFERENCES Shipping(ShippingID);
+ALTER TABLE [Order]
+	ADD CONSTRAINT FK_OrderStatusID FOREIGN KEY (StatusID) REFERENCES [Status](StatusID);
+ALTER TABLE [Order]
+	ADD CONSTRAINT CK_OrderPostalCode CHECK (PostalCode LIKE '[A-Z][0-9][A-Z] [0-9][A-Z][0-9]');
 
 CREATE TABLE OrderItems(
 	OrderItemID INT NOT NULL IDENTITY(90000000,1),
@@ -167,3 +165,21 @@ ALTER TABLE OrderItems
 	ADD CONSTRAINT PK_OrderItemsOrderID FOREIGN KEY(OrderID) REFERENCES [Order](OrderID);
 ALTER TABLE OrderItems
 	ADD CONSTRAINT FK_OrderItemsInventory FOREIGN KEY(InventoryID) REFERENCES Inventory(InventoryID);
+
+CREATE TABLE ShippingOptions
+(
+	ShippingID INT NOT NULL,
+	ShippingName VARCHAR(30) NOT NULL
+)
+
+ALTER TABLE ShippingOptions
+	ADD CONSTRAINT PK_ShippingID PRIMARY KEY (ShippingID);
+
+CREATE TABLE ShippingStatus
+(
+	StatusID INT NOT NULL,
+	StatusName VARCHAR(15) NOT NULL
+)
+
+ALTER TABLE ShippingStatus
+	ADD CONSTRAINT PK_StatusID PRIMARY KEY (StatusID);

@@ -18,7 +18,7 @@ namespace TCG_Store.Controllers
     /// </summary>
     [Route("api/v1/Cards")]
     [ApiController]
-    public class CardController
+    public class CardController : ControllerBase
     {
         /// <summary>
         /// Http Post Method for adding Yugioh Crads. Performs an HTTP request for the card sets and then saves all the new cards in that set to the DB.
